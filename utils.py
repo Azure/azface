@@ -355,6 +355,8 @@ def mark_face(image, face, text):
 
 def get_key(key, endpoint, key_file):
     default_key_file = 'key.txt'
+    key_from_file = None
+    # endpoint_from_file = None
     if not key or not endpoint:
 
         # Check if there is a key file
