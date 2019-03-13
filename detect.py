@@ -64,7 +64,7 @@ else:
 
 # Query Azure face API to detect faces
 
-msg = "\nDetecting faces in photo:\n  {}Please close each image window (Ctrl-w) to proceed.\n"
+msg = "\nDetecting faces in photo:\n  {}\nPlease close each image window (Ctrl-w) to proceed.\n"
 if is_url(img_url):  # Photo from URL
     # For return_face_attributes, it can be a FaceAttributeType, or a list of string
     print(msg.format(img_url))
@@ -88,13 +88,3 @@ else:  # Photo from file
             faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
 
         show_detection_results(img_url, faces)
-
-
-
-
-
-
-
-
-
-

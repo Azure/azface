@@ -1,6 +1,7 @@
 import argparse
 import cv2 as cv
 import getpass
+import glob
 import hashlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -445,8 +446,6 @@ def show_detection_results(img_url, faces):
             print("        {}".format(interpret_occlusion(attrs.occlusion)))
     else:
         print("    No faces found!")
-
-    print("")
 
     # Display the image in the users default image browser.
 
