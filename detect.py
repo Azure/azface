@@ -1,5 +1,6 @@
 print("Loading the required Python modules ...\n")
 import argparse
+import os
 
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
@@ -62,13 +63,21 @@ if is_url(img_url):  # Photo from URL
 
 else:  # Photo from file
     img_url = get_abspath(img_url)
-    for path in list_files(img_url):
-        print("Detecting faces in photo:\n{}".format(path))
-        with open(path, 'rb') as file:
+    if os.path.isdir(img_url):
+        for path in list_files(img_url):
+            print("Detecting faces in photo:\n{}".format(path))
+            with open(path, 'rb') as file:
+                # For face attributes, it can be a FaceAttributeType, or a list of string
+                faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
+
+            show_detection_results(path, faces)
+    else:
+        print("Detecting faces in photo:\n{}".format(img_url))
+        with open(img_url, 'rb') as file:
             # For face attributes, it can be a FaceAttributeType, or a list of string
             faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
 
-        show_detection_results(path, faces)
+        show_detection_results(img_url, faces)
 
 
 

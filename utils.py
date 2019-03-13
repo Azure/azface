@@ -372,7 +372,7 @@ def get_key(key, endpoint, key_file):
 
     a Azure face API subscription key is needed.
 
-    A 7-days free trail Azure account can be created at:
+    A 7-days free trial Azure account can be created at:
 
         https://azure.microsoft.com/en-us/try/cognitive-services/?api=face-api
 
@@ -396,7 +396,7 @@ def get_key(key, endpoint, key_file):
 
     if not endpoint:
         msg = "Please paste the endpoint below (Your endpoint will be kept in\n'{}'):".format(default_key_file)
-        endpoint = ask_for_input(msg, hide=True)
+        endpoint = ask_for_input(msg)
 
     return key, endpoint
 
