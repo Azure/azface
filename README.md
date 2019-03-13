@@ -32,7 +32,7 @@ subscription account at
   command line options:
   
   ```console
-  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
+  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo '~/.mlhub/azface/figure/detection'
   ```
 
   Key and endpoint can also be stored in a file such as `key.txt`:
@@ -45,7 +45,7 @@ subscription account at
   And they can be read by:
   
   ```console
-  $ ml detect azface --key-file key.txt --photo 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
+  $ ml detect azface --key-file key.txt --photo 'https://southeastasia.api.cognitive.microsoft.com'
   ```
 
 
