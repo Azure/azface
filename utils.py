@@ -186,6 +186,11 @@ def ask_for_input(msg, hide=False):
     print(msg)
     msg = "> "
     prompt = getpass.getpass if hide else input
+    if prompt == input:  # Setup input path completion
+        readline.set_completer_delims('\t')
+        readline.parse_and_bind("tab: complete")
+        readline.set_completer(tab_complete_path)
+
     res = prompt(msg)
     while res.strip() == '':
         res = prompt("> ")
@@ -395,8 +400,10 @@ def get_key(key, endpoint, key_file):
         key = ask_for_input(msg, hide=True)
 
     if not endpoint:
-        msg = "\nPlease paste the endpoint below (Your endpoint will be kept in\n'{}'):".format(default_key_file)
+        msg = "\nAnd the endpoint:".format(default_key_file)
         endpoint = ask_for_input(msg)
+
+    save_key(key, endpoint, default_key_file)
 
     return key, endpoint
 

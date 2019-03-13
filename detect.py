@@ -1,7 +1,6 @@
 print("Loading the required Python modules ...\n")
 import argparse
 import os
-import readline
 
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
@@ -59,13 +58,6 @@ client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 
 if not args.photo:
     msg = "\nPlease give the URL or path of a photo to detect faces:"
-
-    # Setup input path completion
-
-    readline.set_completer_delims('\t')
-    readline.parse_and_bind("tab: complete")
-    readline.set_completer(tab_complete_path)
-
     img_url = ask_for_input(msg)
 else:
     img_url = args.photo
