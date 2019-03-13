@@ -1,6 +1,7 @@
 print("Loading the required Python modules ...\n")
 import argparse
 import os
+import readline
 
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
@@ -13,6 +14,7 @@ from utils import (
     list_files,
     option_parser,
     show_detection_results,
+    tab_complete_path,
 )
 
 # ----------------------------------------------------------------------
@@ -32,6 +34,8 @@ args = parser.parse_args()
 
 face_attrs = ['age', 'gender', 'glasses', 'emotion', 'occlusion']
 
+# Get Azure face API key and endpoint
+
 key, endpoint = get_key(args.key, args.endpoint, args.key_file)
 
 # **Note**:
@@ -47,17 +51,31 @@ endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
 # Call face API to detect and describe faces
 # ----------------------------------------------------------------------
 
+# Setup Azure face API client
+
 client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 
+# Get the photo
+
 if not args.photo:
-    msg = "Please give the URL or path of a photo to detect faces:"
+    msg = "\nPlease give the URL or path of a photo to detect faces:"
+
+    # Setup input path completion
+
+    readline.set_completer_delims('\t')
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(tab_complete_path)
+
     img_url = ask_for_input(msg)
 else:
     img_url = args.photo
 
+# Query Azure face API to detect faces
+
+msg = "\nDetecting faces in photo:\n{}\n"
 if is_url(img_url):  # Photo from URL
     # For return_face_attributes, it can be a FaceAttributeType, or a list of string
-    print("Detecting faces in photo:\n{}".format(img_url))
+    print(msg.format(img_url))
     faces = client.face.detect_with_url(img_url, return_face_attributes=face_attrs)
     show_detection_results(img_url, faces)
 
@@ -65,14 +83,14 @@ else:  # Photo from file
     img_url = get_abspath(img_url)
     if os.path.isdir(img_url):
         for path in list_files(img_url):
-            print("Detecting faces in photo:\n{}".format(path))
+            print(msg.format(path))
             with open(path, 'rb') as file:
                 # For face attributes, it can be a FaceAttributeType, or a list of string
                 faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
 
             show_detection_results(path, faces)
     else:
-        print("Detecting faces in photo:\n{}".format(img_url))
+        print(msg.format(img_url))
         with open(img_url, 'rb') as file:
             # For face attributes, it can be a FaceAttributeType, or a list of string
             faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)

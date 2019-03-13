@@ -391,11 +391,11 @@ def get_key(key, endpoint, key_file):
     endpoint = endpoint if endpoint else endpoint_from_file
 
     if not key:
-        msg = "Please paste the key below (Your key will be kept in\n'{}'):".format(default_key_file)
+        msg = "\nPlease paste the key below (Your key will be kept in\n'{}'):".format(default_key_file)
         key = ask_for_input(msg, hide=True)
 
     if not endpoint:
-        msg = "Please paste the endpoint below (Your endpoint will be kept in\n'{}'):".format(default_key_file)
+        msg = "\nPlease paste the endpoint below (Your endpoint will be kept in\n'{}'):".format(default_key_file)
         endpoint = ask_for_input(msg)
 
     return key, endpoint
@@ -465,3 +465,17 @@ def is_url(url):
         return True
     else:
         return False
+
+
+# ----------------------------------------------------------------------
+# readline
+# ----------------------------------------------------------------------
+
+def tab_complete_path(text, state):
+    if '~' in text:
+        text = os.path.expanduser('~')
+
+    if os.path.isdir(text):
+        text += '/'
+
+    return [x for x in glob.glob(text + '*')][state]
