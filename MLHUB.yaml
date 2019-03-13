@@ -1,0 +1,22 @@
+--- # Azure face demo
+meta:
+  name      : azface
+  title     : Simple Azure face API demo.
+  languages : py
+  version   : 0.0.1
+  keywords  : face recognition, python3, computer vision
+  license   : gpl3
+  display   : detect
+  url       : https://github.com/simonzhaoms/azface
+dependencies:
+  system: cmake
+  pip3:
+    - matplotlib
+    - toolz
+    - azure-cognitiveservices-vision-face
+  files:
+    - detect.py
+    - utils.py
+    - README.md
+commands:
+  detect: Detect faces in provided photos.
