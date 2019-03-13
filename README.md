@@ -45,7 +45,7 @@ subscription account at
   And they can be read by:
   
   ```console
-  $ ml detect azface --key-file key.txt --photo 'https://southeastasia.api.cognitive.microsoft.com'
+  $ ml detect azface --key-file key.txt --photo '~/.mlhub/azface/figure/detection'
   ```
 
 
