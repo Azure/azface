@@ -10,9 +10,12 @@ meta:
   url       : https://github.com/simonzhaoms/azface
 dependencies:
   system: cmake
-  pip3:
+  python3:
     - matplotlib
     - toolz
+  pip3:
+    - numpy==1.14.5
+    - opencv-contrib-python==4.0.0.21
     - azure-cognitiveservices-vision-face
   files:
     - detect.py
