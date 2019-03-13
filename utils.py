@@ -440,7 +440,7 @@ def show_detection_results(img_url, faces):
             attrs = face.face_attributes
             print("    Face No. {}:".format(index))
             print("        Age: {}".format(attrs.age))
-            print("        Aender: {}".format(attrs.gender))
+            print("        Gender: {}".format(attrs.gender))
             print("        {}".format(interpret_glasses(attrs.glasses)))
             print("        {}".format(interpret_emotion(attrs.emotion)))
             print("        {}".format(interpret_occlusion(attrs.occlusion)))
