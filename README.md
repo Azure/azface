@@ -27,12 +27,12 @@ subscription account at
   $ ml detect azface
   ```
   
-  It will ask for your Azure face API key, endpoint as well as a URL
+  It will ask for your Azure face API key, endpoint, as well as a URL
   or path of a photo to detect faces.  You also can provide these by
   command line options:
   
   ```console
-  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo 'https://zzz'
+  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
   ```
 
   Key and endpoint can also be stored in a file such as `key.txt`:
@@ -45,7 +45,7 @@ subscription account at
   And they can be read by:
   
   ```console
-  $ ml detect azface --key-file key.txt --photo 'https://zzz'
+  $ ml detect azface --key-file key.txt --photo 'https://raw.githubusercontent.com/Microsoft/Cognitive-Face-Windows/master/Data/detection1.jpg'
   ```
 
 
