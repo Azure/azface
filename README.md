@@ -70,10 +70,13 @@ subscription account at
 * To find similar faces between two photos:
 
   ```console
-  $ ml similar azface --target xxx.jpg --candidate xxx.jpg --key-file zzz.txt
+  $ ml similar azface --target xxx.jpg --candidate yyy.jpg --key-file zzz.txt
   ```
+  
+  Thus all faces in `yyy.jpg` that are similar to the faces in
+  `xxx.jpg` will be found.
 
-  For example:
+  **Examples**:
 
   ```console
   $ ml similar azface --target '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg' --candidate '~/.mlhub/azface/photo/identification/identification1.jpg'
