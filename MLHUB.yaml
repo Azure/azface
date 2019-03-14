@@ -21,6 +21,6 @@ dependencies:
     - detect.py
     - utils.py
     - README.md
-    - figure
+    - photo
 commands:
   detect: Detect faces in provided photos.
