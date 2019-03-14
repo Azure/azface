@@ -27,7 +27,7 @@ MARK_WIDTH = 4
 TEXT_COLOR = MARK_COLOR
 LINE_WIDTH = 2
 TEXT_FONT = cv.FONT_HERSHEY_SIMPLEX
-TEXT_SIZE = 2
+TEXT_SIZE = 1
 
 
 # ----------------------------------------------------------------------
@@ -50,11 +50,6 @@ option_parser.add_argument(
     '--endpoint',
     type=str,
     help='endpoint of Azure face API service')
-
-option_parser.add_argument(
-    '--photo',
-    type=str,
-    help='path or URL of a photo where faces will be detected')
 
 
 # ----------------------------------------------------------------------
@@ -328,7 +323,7 @@ def getbox(face):
     return top, right, bottom, left
 
 
-def mark_face(image, face, text):
+def mark_face(image, face, text=None):
     """Mark the <faces> in <image>.
 
     Args:
@@ -341,22 +336,24 @@ def mark_face(image, face, text):
 
     (textwidth, textheight), baseline = cv.getTextSize(text, TEXT_FONT, TEXT_SIZE, LINE_WIDTH)
     top, right, bottom, left = face
-    imgheight, imgwidth, _ = image.shape
-
-    y = top - baseline
-    if y < textheight:
-        y = bottom + textheight
-        if y + baseline > imgheight:
-            y = top + textheight
-
-    x = int(left + (right - left - textwidth)/2)
-    if x < 0:
-        x = 0
-    elif x + textwidth > imgwidth:
-        x = imgwidth - textwidth
-
     cv.rectangle(image, (left, top), (right, bottom), MARK_COLOR, MARK_WIDTH)
-    cv.putText(image, text, (x, y), TEXT_FONT, TEXT_SIZE, TEXT_COLOR, LINE_WIDTH)
+
+    if text:
+        imgheight, imgwidth, _ = image.shape
+
+        y = top - baseline
+        if y < textheight:
+            y = bottom + textheight
+            if y + baseline > imgheight:
+                y = top + textheight
+
+        x = int(left + (right - left - textwidth)/2)
+        if x < 0:
+            x = 0
+        elif x + textwidth > imgwidth:
+            x = imgwidth - textwidth
+
+        cv.putText(image, text, (x, y), TEXT_FONT, TEXT_SIZE, TEXT_COLOR, LINE_WIDTH)
 
 
 def get_key(key, endpoint, key_file):
@@ -435,10 +432,10 @@ def interpret_occlusion(occlusion):
 def show_detection_results(img_url, faces):
     bgr = read_cv_image_from(img_url)
     if faces:
-        for index, face in enumerate(faces):
-            mark_face(bgr, getbox(face), str(index))
+        for face in faces:
+            mark_face(bgr, getbox(face), text=face.face_id)
             attrs = face.face_attributes
-            print("    Face No. {}:".format(index))
+            print("    Face No. {}:".format(face.face_id))
             print("        Age: {}".format(attrs.age))
             print("        Gender: {}".format(attrs.gender))
             print("        {}".format(interpret_glasses(attrs.glasses)))
@@ -450,6 +447,68 @@ def show_detection_results(img_url, faces):
     # Display the image in the users default image browser.
 
     display(bgr, frombgr=True)
+
+
+def azface_detect(client, img_url, **kwargs):
+    """Detect faces using Azure face API."""
+
+    if is_url(img_url):  # Photo from URL
+        # For return_face_attributes, it can be a FaceAttributeType, or a list of string
+        faces = client.face.detect_with_url(img_url, **kwargs)
+    else:  # Photo from a file
+        with open(img_url, 'rb') as file:
+            # For face attributes, it can be a FaceAttributeType, or a list of string
+            faces = client.face.detect_with_stream(file, **kwargs)
+
+    return faces
+
+
+def azface_similar(client, target_url, target_faces, candidate_url, candidate_faces):
+    if candidate_faces:
+        matches = {}
+        candidate_ids = [x.face_id for x in candidate_faces]
+        labels = {face.face_id: str(i) for i, face in enumerate(target_faces)}
+
+        msg = "\nMatching the face No. {} ..."
+        for query_face in target_faces:
+            print(msg.format(labels[query_face.face_id]))
+
+            # Call Azure face API to find matches
+
+            similar_faces = client.face.find_similar(query_face.face_id, face_ids=candidate_ids)
+
+            # Update the best matched face
+
+            if similar_faces:
+                best_match = max(similar_faces, key=lambda face: face.confidence)
+                match_face = next(x for x in candidate_faces if x.face_id == best_match.face_id)
+                if match_face.face_id not in matches or matches[match_face.face_id][2] < best_match.confidence:
+                    matches[match_face.face_id] = (query_face, best_match.confidence)
+
+        # Mark matched faces
+
+        target_bgr = read_cv_image_from(target_url)
+        candidate_bgr = read_cv_image_from(candidate_url)
+
+        for face in target_faces:
+            mark_face(target_bgr, getbox(face), text=labels[face.face_id])
+
+        for face in candidate_faces:
+            if face.face_id in matches:
+                mark_face(candidate_bgr, getbox(face), text=labels[matches[face.face_id][0].face_id])
+            else:
+                mark_face(candidate_bgr, getbox(face), text='?')
+
+        # Plot results
+
+        print("\nPlease close each image window (Ctrl-w) to proceed.")
+        plot_side_by_side_comparison(
+            *convert_cv2matplot(target_bgr, candidate_bgr),
+            leftlabel='Target faces',
+            rightlabel='Matched faces')
+
+    else:
+        print("No faces found in {}".format(candidate_url))
 
 
 # ----------------------------------------------------------------------

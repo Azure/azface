@@ -7,13 +7,13 @@ from msrest.authentication import CognitiveServicesCredentials  # To hold the su
 
 from utils import (
     ask_for_input,
+    azface_detect,
     get_abspath,
     get_key,
     is_url,
     list_files,
     option_parser,
     show_detection_results,
-    tab_complete_path,
 )
 
 # ----------------------------------------------------------------------
@@ -25,6 +25,12 @@ parser = argparse.ArgumentParser(
     parents=[option_parser],
     description='Detect faces in an image.'
 )
+
+parser.add_argument(
+    '--photo',
+    type=str,
+    help='path or URL of a photo where faces will be detected')
+
 args = parser.parse_args()
 
 # ----------------------------------------------------------------------
@@ -45,6 +51,14 @@ key, endpoint = get_key(args.key, args.endpoint, args.key_file)
 
 endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
 
+# Get the photo
+
+if not args.photo:
+    msg = "\nPlease give the URL or path of a photo to detect faces:"
+    img_url = ask_for_input(msg)
+else:
+    img_url = args.photo
+
 
 # ----------------------------------------------------------------------
 # Call face API to detect and describe faces
@@ -54,37 +68,24 @@ endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
 
 client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 
-# Get the photo
-
-if not args.photo:
-    msg = "\nPlease give the URL or path of a photo to detect faces:"
-    img_url = ask_for_input(msg)
-else:
-    img_url = args.photo
-
 # Query Azure face API to detect faces
 
 msg = "\nDetecting faces in photo:\n  {}\nPlease close each image window (Ctrl-w) to proceed.\n"
 if is_url(img_url):  # Photo from URL
-    # For return_face_attributes, it can be a FaceAttributeType, or a list of string
+
     print(msg.format(img_url))
-    faces = client.face.detect_with_url(img_url, return_face_attributes=face_attrs)
+    faces = azface_detect(client, img_url, return_face_attributes=face_attrs)
     show_detection_results(img_url, faces)
 
 else:  # Photo from file
+
     img_url = get_abspath(img_url)
     if os.path.isdir(img_url):
         for path in list_files(img_url):
             print(msg.format(path))
-            with open(path, 'rb') as file:
-                # For face attributes, it can be a FaceAttributeType, or a list of string
-                faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
-
+            faces = azface_detect(client, path, return_face_attributes=face_attrs)
             show_detection_results(path, faces)
     else:
         print(msg.format(img_url))
-        with open(img_url, 'rb') as file:
-            # For face attributes, it can be a FaceAttributeType, or a list of string
-            faces = client.face.detect_with_stream(file, return_face_attributes=face_attrs)
-
+        faces = azface_detect(client, img_url, return_face_attributes=face_attrs)
         show_detection_results(img_url, faces)
