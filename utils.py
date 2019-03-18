@@ -236,7 +236,7 @@ def convert_cv2matplot(*images):
         return None
 
 
-def _plot_image(ax, img, cmap=None, label=''):
+def _plot_image(ax, img, cmap=None, label='', text=None):
     """Plot <img> in <ax>."""
 
     ax.imshow(img, cmap)
@@ -256,6 +256,8 @@ def _plot_image(ax, img, cmap=None, label=''):
         # labelbottom='off')
         labelbottom=False)
     ax.set_xlabel(label)
+    if text:
+        ax.text(0, -10, text)
 
 
 def plot_side_by_side_comparison(
@@ -264,11 +266,14 @@ def plot_side_by_side_comparison(
         leftlabel='Original Image',
         rightlabel='Result',
         leftcmap=None,
-        rightcmap=None):
+        rightcmap=None,
+        leftdescription=None,
+        rightdescription=None):
     """Plot two images side by side."""
 
     # Setup canvas
 
+    plt.rcParams.update({'figure.autolayout': True})
     gs = gridspec.GridSpec(6, 13)
     gs.update(hspace=0.1, wspace=0.001)
     fig = plt.figure(figsize=(7, 3))
@@ -276,12 +281,12 @@ def plot_side_by_side_comparison(
     # Plot Left image
 
     ax = fig.add_subplot(gs[:, 0:6])
-    _plot_image(ax, leftimg, cmap=leftcmap, label=leftlabel)
+    _plot_image(ax, leftimg, cmap=leftcmap, label=leftlabel, text=leftdescription)
 
     # Plot right image
 
     ax = fig.add_subplot(gs[:, 7:13])
-    _plot_image(ax, rightimg, cmap=rightcmap, label=rightlabel)
+    _plot_image(ax, rightimg, cmap=rightcmap, label=rightlabel, text=rightdescription)
 
     # Show all of them
 
@@ -298,12 +303,20 @@ def show_image(url, show=True):
     return img
 
 
-def display(img, frombgr=False):
+def display(img, frombgr=False, text=None):
     """Display <img> array."""
 
     if frombgr:
         img = convert_cv2matplot(img)
+    height, _, _ = img.shape
+    plt.rcParams.update({'figure.autolayout': True})
     plt.axis('off')
+
+    if text:
+        lines = text.split('\n')
+        for i, line in enumerate(lines):
+            plt.text(0, height + 30*(i+1), line)
+
     plt.imshow(img)
     plt.show()
 
@@ -407,15 +420,11 @@ def get_key(key, endpoint, key_file):
 
 
 def interpret_glasses(glasses):
-    if glasses != 'noGlasses':
-        return "Glasses: {}".format(glasses)
-    else:
-        return "No glasses"
+    return glasses if glasses != 'noGlasses' else "no glasses"
 
 
 def interpret_emotion(emotion):
-    emotion = max(vars(emotion), key=lambda attr: getattr(emotion, attr) if getattr(emotion, attr) else 0)
-    return "Emotion: {}".format(emotion)
+    return max(vars(emotion), key=lambda attr: getattr(emotion, attr) if getattr(emotion, attr) else 0)
 
 
 def interpret_occlusion(occlusion):
@@ -424,30 +433,32 @@ def interpret_occlusion(occlusion):
         if v:
             res.append(k)
     if res:
-        return "Occlusion: {}".format(', '.join(res))
+        return ', '.join(res)
     else:
-        return "No occlusion"
+        return "no occlusion"
 
 
 def show_detection_results(img_url, faces):
     bgr = read_cv_image_from(img_url)
+    description = ''
     if faces:
         labels = {face.face_id: str(i) for i, face in enumerate(faces)}
         for face in faces:
             mark_face(bgr, getbox(face), text=labels[face.face_id])
             attrs = face.face_attributes
-            print("    Face No. {}:".format(labels[face.face_id]))
-            print("        Age: {}".format(attrs.age))
-            print("        Gender: {}".format(attrs.gender))
-            print("        {}".format(interpret_glasses(attrs.glasses)))
-            print("        {}".format(interpret_emotion(attrs.emotion)))
-            print("        {}".format(interpret_occlusion(attrs.occlusion)))
+            description += "Face No. {}: {} years-old, {}, {}, {}, {}\n".format(
+                labels[face.face_id],
+                attrs.age,
+                attrs.gender,
+                interpret_glasses(attrs.glasses),
+                interpret_emotion(attrs.emotion),
+                interpret_occlusion(attrs.occlusion))
     else:
         print("    No faces found!")
 
     # Display the image in the users default image browser.
 
-    display(bgr, frombgr=True)
+    display(bgr, frombgr=True, text=description)
 
 
 def azface_detect(client, img_url, **kwargs):
@@ -494,9 +505,12 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
         for face in target_faces:
             mark_face(target_bgr, getbox(face), text=labels[face.face_id])
 
+        description = []
         for face in candidate_faces:
             if face.face_id in matches:
-                mark_face(candidate_bgr, getbox(face), text=labels[matches[face.face_id][0].face_id])
+                number = labels[matches[face.face_id][0].face_id]
+                mark_face(candidate_bgr, getbox(face), text=number)
+                description.append("Face No. {}: {}".format(number, matches[face.face_id][1]))
             else:
                 mark_face(candidate_bgr, getbox(face), text='?')
 
@@ -506,7 +520,8 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
         plot_side_by_side_comparison(
             *convert_cv2matplot(target_bgr, candidate_bgr),
             leftlabel='Target faces',
-            rightlabel='Matched faces')
+            rightlabel='Matched faces',
+            rightdescription=None if not description else "Matching confidence:\n{}".format('\n'.join(description)))
 
     else:
         print("No faces found in {}".format(candidate_url))
