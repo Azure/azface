@@ -432,10 +432,11 @@ def interpret_occlusion(occlusion):
 def show_detection_results(img_url, faces):
     bgr = read_cv_image_from(img_url)
     if faces:
+        labels = {face.face_id: str(i) for i, face in enumerate(faces)}
         for face in faces:
-            mark_face(bgr, getbox(face), text=face.face_id)
+            mark_face(bgr, getbox(face), text=labels[face.face_id])
             attrs = face.face_attributes
-            print("    Face No. {}:".format(face.face_id))
+            print("    Face No. {}:".format(labels[face.face_id]))
             print("        Age: {}".format(attrs.age))
             print("        Gender: {}".format(attrs.gender))
             print("        {}".format(interpret_glasses(attrs.glasses)))
@@ -482,7 +483,7 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
             if similar_faces:
                 best_match = max(similar_faces, key=lambda face: face.confidence)
                 match_face = next(x for x in candidate_faces if x.face_id == best_match.face_id)
-                if match_face.face_id not in matches or matches[match_face.face_id][2] < best_match.confidence:
+                if match_face.face_id not in matches or matches[match_face.face_id][1] < best_match.confidence:
                     matches[match_face.face_id] = (query_face, best_match.confidence)
 
         # Mark matched faces
