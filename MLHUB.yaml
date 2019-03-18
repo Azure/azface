@@ -3,7 +3,7 @@ meta:
   name      : azface
   title     : Simple Azure face API demo.
   languages : py
-  version   : 0.0.4
+  version   : 0.0.5
   keywords  : face recognition, python3, computer vision
   license   : gpl3
   display   : detect, similar
@@ -18,11 +18,13 @@ dependencies:
     - opencv-contrib-python==4.0.0.21
     - numpy==1.14.5
   files:
+    - demo.py
     - detect.py
     - similar.py
     - utils.py
     - README.md
     - photo
 commands:
+  demo: See a demostration of what it can do.
   detect: Detect faces in provided photos.
   similar: Find similar faces between photos.

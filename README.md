@@ -40,6 +40,13 @@ subscription account at
   $ ml configure azface
   ```
 
+* To see a quick demostration of what this package can do:
+
+  ```console
+  $ ml demo azface
+  ```
+
+
 * To detect faces in a photo:
 
   ```console
