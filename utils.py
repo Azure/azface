@@ -199,8 +199,12 @@ def stop(msg, status=0):
     sys.exit(status)
 
 
-def getpass():
+def getpass(prompt=None):
     symbol = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?"
+    if prompt:
+        sys.stdout.write(prompt)
+        sys.stdout.flush()
+
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
     chars = []
