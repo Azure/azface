@@ -1,6 +1,5 @@
 import argparse
 import cv2 as cv
-import getpass
 import glob
 import hashlib
 import matplotlib.pyplot as plt
@@ -10,7 +9,9 @@ import os
 import re
 import readline  # Don't remove !! For prompt of input() to take effect
 import sys
+import termios
 import toolz
+import tty
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -181,7 +182,7 @@ def make_name_dir(path, name):
 def ask_for_input(msg, hide=False):
     print(msg)
     msg = "> "
-    prompt = getpass.getpass if hide else input
+    prompt = getpass if hide else input
     if prompt == input:  # Setup input path completion
         readline.set_completer_delims('\t')
         readline.parse_and_bind("tab: complete")
@@ -196,6 +197,35 @@ def ask_for_input(msg, hide=False):
 def stop(msg, status=0):
     print(msg)
     sys.exit(status)
+
+
+def getpass():
+    symbol = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?"
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    chars = []
+    try:
+        tty.setraw(sys.stdin.fileno())
+        while True:
+            c = sys.stdin.read(1)
+            if c in '\n\r':  # Enter.
+                break
+            if c == '\003':
+                raise KeyboardInterrupt
+            if c == '\x7f':  # Backspace.
+                if chars:
+                    sys.stdout.write('\b \b')
+                    sys.stdout.flush()
+                    del chars[-1]
+                continue
+            if c.isalnum() or c in symbol:
+                sys.stdout.write('*')
+                sys.stdout.flush()
+                chars.append(c)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        sys.stdout.write('\n')
+    return ''.join(chars)
 
 
 # ----------------------------------------------------------------------
@@ -525,6 +555,66 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
 
     else:
         print("No faces found in {}".format(candidate_url))
+
+
+def setup_key_endpoint(key, endpoint, key_file):
+
+    key, endpoint = get_key(key, endpoint, key_file)  # Get Azure face API key and endpoint
+
+    # **Note**:
+    # 1. The endpoint URL varies depending on the region of your service and can be found at Overview page of your service.
+    #    See 'https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236'
+    # 1. For Azure face API for Python, endpoint should omit the trailing part of
+    #    'https://southeastasia.api.cognitive.microsoft.com/face/v1.0'
+
+    endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
+
+    return key, endpoint
+
+
+def azface_add(client, img_url, name, person=None):
+    """Add the face in img_url to the person name."""
+
+    display(read_cv_image_from(img_url), frombgr=True)
+
+    # Use the person name as person group ID and person group name
+
+    person_group_id = name
+    person_group_name = name
+    person_name = name
+
+    if not person:  # Get the person information.  Create it if not available
+
+        # Get the list of person groups
+
+        person_groups = client.person_group.list()
+        person_groups = [x.person_group_id for x in person_groups]
+
+        # Get the list of persons in the person group
+
+        person_list = client.person_group_person.list(person_group_id)
+
+        # Create a person group if not available
+
+        if person_group_id not in person_groups:
+            client.person_group.create(person_group_id, name=person_group_name)
+
+        # Create a person belongs to the person group if not available
+
+        try:
+            person = next(x for x in person_list if x.name == person_name)
+        except StopIteration:
+            person = client.person_group_person.create(person_group_id, name=person_name)
+
+    # Add face for the person
+
+    if is_url(img_url):  # Photo from URL
+        client.person_group_person.add_face_from_url(person_group_id, person.person_id, img_url)
+    else:  # Photo from a file
+        with open(img_url, 'rb') as file:
+            client.person_group_person.add_face_from_url(person_group_id, person.person_id, file)
+
+    return person
 
 
 # ----------------------------------------------------------------------

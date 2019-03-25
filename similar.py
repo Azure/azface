@@ -10,10 +10,10 @@ from utils import (
     azface_detect,
     azface_similar,
     get_abspath,
-    get_key,
     is_url,
     list_files,
     option_parser,
+    setup_key_endpoint,
     stop,
 )
 
@@ -43,17 +43,7 @@ args = parser.parse_args()
 # Setup
 # ----------------------------------------------------------------------
 
-# Get Azure face API key and endpoint
-
-key, endpoint = get_key(args.key, args.endpoint, args.key_file)
-
-# **Note**:
-# 1. The endpoint URL varies depending on the region of your service and can be found at Overview page of your service.
-#    See 'https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236'
-# 1. For Azure face API for Python, endpoint should omit the trailing part of
-#    'https://southeastasia.api.cognitive.microsoft.com/face/v1.0'
-
-endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
+key, endpoint = setup_key_endpoint(args.key, args.endpoint, args.key_file)
 
 # Get the photo of target faces
 
