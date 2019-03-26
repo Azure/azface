@@ -200,6 +200,14 @@ def stop(msg, status=0):
 
 
 def getpass(prompt=None):
+    """Simple input for password.
+
+    It will echo '*' for every input character instead of the one per se.
+    It only implement the basic I/O functionality, so only Backspace is supported.
+    No support for Delete, Left key, Right key and any other line editing are supported.
+
+    Reference: https://mail.python.org/pipermail/python-list/2011-December/615955.html
+    """
     symbol = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?"
     if prompt:
         sys.stdout.write(prompt)
