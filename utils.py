@@ -420,18 +420,18 @@ def get_key(key, endpoint, key_file):
         if key_file:
             key_file = get_abspath(key_file)
         else:
-            if not os.path.exists(default_key_file):
-                msg = """An Azure resource is required to access this service (and to run this
-demo). See the README for details of a free subscription. Then you can
-provide the key and the endpoint information here."""
-                print(msg)
-            else:
+            if os.path.exists(default_key_file) and os.path.getsize(default_key_file) != 0:
                 msg = """The following file has been found and is assumed to contain an Azure Face API
 subscription key and endpoint. We will load the file and use this information. 
 
 """ + os.getcwd() + "/" + default_key_file
                 print(msg)
                 key_file = default_key_file
+            else:
+                msg = """An Azure resource is required to access this service (and to run this
+demo). See the README for details of a free subscription. Then you can
+provide the key and the endpoint information here."""
+                print(msg)
 
         if key_file:
             key_from_file, endpoint_from_file = load_key(key_file)
