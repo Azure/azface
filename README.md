@@ -11,7 +11,7 @@ Machine Learning called Face. Once created you can access the web API
 subscription key from the portal. This will be prompted for in the
 demo.
 
-Please note that this is closed source software which limits your
+Please note that this is *closed source software* which limits your
 freedoms and has no guarantee of ongoing availability.
 
 Visit the github repository for more details:
@@ -32,11 +32,16 @@ subscription account at
 
 ## Usage ##
 
-* To install:
+* To install mlhub 
 
   ```console
   $ pip3 install mlhub
-  $ ml install simonzhaoms/azface
+  ```
+
+* To install and configure the pre-built model:
+
+  ```console
+  $ ml install gjwgit/azface
   $ ml configure azface
   ```
 
@@ -45,7 +50,6 @@ subscription account at
   ```console
   $ ml demo azface
   ```
-
 
 * To detect faces in a photo:
 
