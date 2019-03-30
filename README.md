@@ -15,7 +15,7 @@ Please note that this is *closed source software* which limits your
 freedoms and has no guarantee of ongoing availability.
 
 Visit the github repository for more details:
-https://github.com/simonzhaoms/azface
+https://github.com/gjwgit/azface
 
 The Python code is based on the [Microsoft Azure Face API
 Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
