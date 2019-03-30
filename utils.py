@@ -426,9 +426,12 @@ demo). See the README for details of a free subscription. Then you can
 provide the key and the endpoint information here."""
                 print(msg)
             else:
-                yes = mlutils.yes_or_no("A subscription key is found locally! Would you like to use it", yes=True)
-                if yes:  # Load Bing search API key if available
-                    key_file = default_key_file
+                msg = """The following file has been found and is assumed to contain an Azure Face API
+subscription key and endpoint. We will load the file and use this information. 
+
+""" + os.getcwd() + "/" + default_key_file
+                print(msg)
+                key_file = default_key_file
 
         if key_file:
             key_from_file, endpoint_from_file = load_key(key_file)
