@@ -180,8 +180,6 @@ def make_name_dir(path, name):
 
 
 def ask_for_input(msg, hide=False):
-    print(msg)
-    msg = "> "
     prompt = getpass if hide else input
     if prompt == input:  # Setup input path completion
         readline.set_completer_delims('\t')
@@ -412,30 +410,20 @@ def mark_face(image, face, text=None):
 
 
 def get_key(key, endpoint, key_file):
-    default_key_file = 'key.txt'
-    key_from_file = None
+    
+    default_key_file   = 'key.txt'
+    key_from_file      = None
     endpoint_from_file = None
-    if not key or not endpoint:
 
-        # Check if there is a key file
+    if not key or not endpoint:
 
         if key_file:
             key_file = get_abspath(key_file)
         else:
             if not os.path.exists(default_key_file):
-                msg = """
-    To use Microsoft Azure face service:
-
-        https://azure.microsoft.com/en-us/services/cognitive-services/face/
-
-    a Azure face API subscription key is needed.
-
-    A 7-days free trial Azure account can be created at:
-
-        https://azure.microsoft.com/en-us/try/cognitive-services/?api=face-api
-
-    You can try it and get the key as well as the endpoint.
-    """
+                msg = """An Azure resource is required to access this service (and to run this
+demo). See the README for details of a free subscription. Then you can
+provide the key and the endpoint information here."""
                 print(msg)
             else:
                 yes = mlutils.yes_or_no("A subscription key is found locally! Would you like to use it", yes=True)
@@ -449,11 +437,11 @@ def get_key(key, endpoint, key_file):
     endpoint = endpoint if endpoint else endpoint_from_file
 
     if not key:
-        msg = "\nPlease paste the key below (Your key will be kept in\n'{}'):".format(default_key_file)
+        msg = "\nPlease paste your Face API subscription key []: "
         key = ask_for_input(msg, hide=True)
 
     if not endpoint:
-        msg = "\nAnd the endpoint:".format(default_key_file)
+        msg = "Please paste your endpoint []: "
         endpoint = ask_for_input(msg)
 
     save_key(key, endpoint, default_key_file)
