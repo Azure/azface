@@ -32,7 +32,7 @@ subscription account at
 
 ## Usage ##
 
-* To install mlhub 
+* To install mlhub (e.g., Ubuntu 18.04 LTS)
 
   ```console
   $ pip3 install mlhub
@@ -94,6 +94,76 @@ subscription account at
   $ ml similar azface --target '~/.mlhub/azface/photo/identification/identification1.jpg' --candidate '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/'
   ```
 
+Demonstration
+-------------
+
+```console
+$ ml demo azface
+=============
+Face Services
+=============
+
+Welcome to a demo of the pre-built models for Face provided through Azure's 
+Cognitive Services. This cloud service accepts images and can perform 
+various analyses of the images, returning the results locally.
+
+The following file has been found and is assumed to contain an Azure Face API
+subscription key and endpoint. We will load the file and use this information. 
+
+/home/gjw/.mlhub/azface/key.txt
+
+Detecting faces in photo:
+  photo/detection/detection2.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface01.png)
+```console
+Detecting faces in photo:
+  photo/detection/detection3.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface02.png)
+```console
+Detecting faces in photo:
+  photo/detection/detection6.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface03.png)
+```console
+Detecting faces in photo:
+  photo/detection/detection1.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface04.png)
+```console
+Detecting faces in photo:
+  photo/detection/detection5.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface05.png)
+```console
+Detecting faces in photo:
+  photo/detection/detection4.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface06.png)
+```console
+Detecting faces in the target photo:
+  photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
+
+Detecting faces in the candidate photo:
+  photo/identification/identification1.jpg
+
+Matching the face No. 0 ...
+
+Please close each image window (Ctrl-w) to proceed.
+```
+(azface07.png)
+```console
+To detect faces in provided photos:
+
+  $ ml detect azface
+```
 
 ## Reference ##
 
