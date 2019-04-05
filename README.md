@@ -116,37 +116,37 @@ Detecting faces in photo:
   photo/detection/detection2.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface01.png)
+![](azface01.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection3.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface02.png)
+![](azface02.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection6.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface03.png)
+![](azface03.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection1.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface04.png)
+![](azface04.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection5.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface05.png)
+![](azface05.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection4.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface06.png)
+![](azface06.png?raw=true)
 ```console
 Detecting faces in the target photo:
   photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
@@ -158,7 +158,7 @@ Matching the face No. 0 ...
 
 Please close each image window (Ctrl-w) to proceed.
 ```
-(azface07.png)
+![](azface07.png?raw=true)
 ```console
 To detect faces in provided photos:
 
