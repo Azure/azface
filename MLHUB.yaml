@@ -7,7 +7,7 @@ meta:
   keywords  : face recognition, python3, computer vision
   license   : gpl3
   display   : detect, similar
-  url       : https://github.com/simonzhaoms/azface
+  url       : https://github.com/gjwgit/azface
 dependencies:
   system: cmake
   python3:
