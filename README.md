@@ -42,11 +42,11 @@ subscription account at
 * To install and configure the pre-built model:
 
   ```console
-  $ ml install gjwgit/azface
+  $ ml install azface
   $ ml configure azface
   ```
 
-* To see a quick demostration of what this package can do:
+* To see a quick demonstration of what this package can do:
 
   ```console
   $ ml demo azface
@@ -65,10 +65,16 @@ Welcome to a demo of the pre-built models for Face provided through Azure's
 Cognitive Services. This cloud service accepts images and can perform 
 various analyses of the images, returning the results locally.
 
-The following file has been found and is assumed to contain an Azure Face API
-subscription key and endpoint. We will load the file and use this information. 
+An Azure resource is required to access this service (and to run this
+demo). See the README for details of a free subscription. Then you can
+provide the key and the endpoint information here.
 
-/home/gjw/.mlhub/azface/key.txt
+Please paste your Face API subscription key []: ********************************
+Please paste your endpoint []: https://australiaeast.api.cognitive.microsoft.com/face/v1.0
+
+The Azure Face API subscription key and endpoint have been saved to:
+
+  /home/gjw/.mlhub/azface/key.txt
 
 Detecting faces in photo:
   photo/detection/detection2.jpg
