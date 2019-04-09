@@ -21,16 +21,6 @@ https://github.com/gjwgit/azface
 The Python code is based on the [Microsoft Azure Face API
 Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
 
-
-## Prerequisites ##
-
-To use the
-[Azure face API](https://azure.microsoft.com/en-us/services/cognitive-services/face/),
-you need to have an Azure subscription.  You can get a 7-days free
-subscription account at
-[Try Cognitive Services](https://azure.microsoft.com/en-us/try/cognitive-services/?api=face-api).
-
-
 ## Usage ##
 
 * To install mlhub (e.g., Ubuntu 18.04 LTS)
