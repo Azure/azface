@@ -1,8 +1,9 @@
-# azface #
+Face Recognition Service
+========================
 
-This MLHub package provides a quick introduction to the pre-built Face
-models provided through the face API of Microsoft Azure's Cognitive
-Services.
+This [MLHub](https://mlhub.ai) package provides a quick introduction
+to the pre-built Face models provided through the face API of
+Microsoft Azure's Cognitive Services.
 
 A free Azure subscription allowing up to 5,000 transactions per month
 is available from https://azure.microsoft.com/free/.  Once set up
