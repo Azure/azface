@@ -51,49 +51,6 @@ subscription account at
   $ ml demo azface
   ```
 
-* To detect faces in a photo:
-
-  ```console
-  $ ml detect azface
-  ```
-  
-  It will ask for your Azure face API key, endpoint, as well as a URL
-  or path of a photo to detect faces.  You also can provide these by
-  command line options:
-  
-  ```console
-  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo '~/.mlhub/azface/photo/detection'
-  ```
-
-  Key and endpoint can also be stored in a file such as `key.txt`:
-  
-  ```
-  key = 'xxx'
-  endpoint = 'https://yyy'
-  ```
-
-  And they can be read by:
-  
-  ```console
-  $ ml detect azface --key-file key.txt --photo '~/.mlhub/azface/photo/detection'
-  ```
-
-* To find similar faces between two photos:
-
-  ```console
-  $ ml similar azface --target xxx.jpg --candidate yyy.jpg --key-file zzz.txt
-  ```
-  
-  Thus all faces in `yyy.jpg` that are similar to the faces in
-  `xxx.jpg` will be found.
-
-  **Examples**:
-
-  ```console
-  $ ml similar azface --target '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg' --candidate '~/.mlhub/azface/photo/identification/identification1.jpg'
-  $ ml similar azface --target '~/.mlhub/azface/photo/identification/identification1.jpg' --candidate '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/'
-  ```
-
 Demonstration
 -------------
 
@@ -164,6 +121,52 @@ To detect faces in provided photos:
 
   $ ml detect azface
 ```
+
+Commands
+--------
+
+* To detect faces in a photo:
+
+  ```console
+  $ ml detect azface
+  ```
+  
+  It will ask for your Azure face API key, endpoint, as well as a URL
+  or path of a photo to detect faces.  You also can provide these by
+  command line options:
+  
+  ```console
+  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo '~/.mlhub/azface/photo/detection'
+  ```
+
+  Key and endpoint can also be stored in a file such as `key.txt`:
+  
+  ```
+  key = 'xxx'
+  endpoint = 'https://yyy'
+  ```
+
+  And they can be read by:
+  
+  ```console
+  $ ml detect azface --key-file key.txt --photo '~/.mlhub/azface/photo/detection'
+  ```
+
+* To find similar faces between two photos:
+
+  ```console
+  $ ml similar azface --target xxx.jpg --candidate yyy.jpg --key-file zzz.txt
+  ```
+  
+  Thus all faces in `yyy.jpg` that are similar to the faces in
+  `xxx.jpg` will be found.
+
+  **Examples**:
+
+  ```console
+  $ ml similar azface --target '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg' --candidate '~/.mlhub/azface/photo/identification/identification1.jpg'
+  $ ml similar azface --target '~/.mlhub/azface/photo/identification/identification1.jpg' --candidate '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/'
+  ```
 
 ## Reference ##
 
