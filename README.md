@@ -46,12 +46,6 @@ subscription account at
   $ ml configure azface
   ```
 
-* To see a quick demonstration of what this package can do:
-
-  ```console
-  $ ml demo azface
-  ```
-
 Demonstration
 -------------
 
