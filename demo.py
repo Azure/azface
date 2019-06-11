@@ -1,7 +1,25 @@
-print("Loading the required Python modules ...\n")
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+# Author: Simon.Zhao@microsoft.com
+#
+# This demo is based on the Azure Cognitive Services Face API Quick Start
 
-from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
-from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
+print("""=============
+Face Services
+=============
+
+Welcome to a demo of the pre-built models for Face provided through Azure's 
+Cognitive Services. This cloud service accepts images and can perform 
+various analyses of the images, returning the results locally.
+""")
+
+# The main interface to access Azure face API:
+
+from azure.cognitiveservices.vision.face.face_client import FaceClient
+
+# To hold the subscription key:
+
+from msrest.authentication import CognitiveServicesCredentials
 
 from utils import (
     azface_detect,
@@ -10,7 +28,6 @@ from utils import (
     list_files,
     show_detection_results,
 )
-
 
 # ----------------------------------------------------------------------
 # Setup
@@ -26,7 +43,6 @@ key, endpoint = get_key(None, None, None)
 
 endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
 client = FaceClient(endpoint, CognitiveServicesCredentials(key))  # Setup Azure face API client
-
 
 # ----------------------------------------------------------------------
 # Face detection

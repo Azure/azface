@@ -1,8 +1,9 @@
-# azface #
+Face Recognition Service
+========================
 
-This MLHub package provides a quick introduction to the pre-built Face
-models provided through the face API of Microsoft Azure's Cognitive
-Services.
+This [MLHub](https://mlhub.ai) package provides a quick introduction
+to the pre-built Face models provided through the face API of
+Microsoft Azure's Cognitive Services.
 
 A free Azure subscription allowing up to 5,000 transactions per month
 is available from https://azure.microsoft.com/free/.  Once set up
@@ -11,41 +12,109 @@ Machine Learning called Face. Once created you can access the web API
 subscription key from the portal. This will be prompted for in the
 demo.
 
-Please note that this is closed source software which limits your
+Please note that this is *closed source software* which limits your
 freedoms and has no guarantee of ongoing availability.
 
 Visit the github repository for more details:
-https://github.com/simonzhaoms/azface
+https://github.com/gjwgit/azface
 
 The Python code is based on the [Microsoft Azure Face API
 Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
 
-
-## Prerequisites ##
-
-To use the
-[Azure face API](https://azure.microsoft.com/en-us/services/cognitive-services/face/),
-you need to have an Azure subscription.  You can get a 7-days free
-subscription account at
-[Try Cognitive Services](https://azure.microsoft.com/en-us/try/cognitive-services/?api=face-api).
-
-
 ## Usage ##
 
-* To install:
+* To install mlhub (e.g., Ubuntu 18.04 LTS)
 
   ```console
   $ pip3 install mlhub
-  $ ml install simonzhaoms/azface
+  ```
+
+* To install and configure the pre-built model:
+
+  ```console
+  $ ml install azface
   $ ml configure azface
   ```
 
-* To see a quick demostration of what this package can do:
+Demonstration
+-------------
 
-  ```console
-  $ ml demo azface
-  ```
+```console
+$ ml demo azface
+=============
+Face Services
+=============
 
+Welcome to a demo of the pre-built models for Face provided through Azure's 
+Cognitive Services. This cloud service accepts images and can perform 
+various analyses of the images, returning the results locally.
+
+An Azure resource is required to access this service (and to run this
+demo). See the README for details of a free subscription. Then you can
+provide the key and the endpoint information here.
+
+Please paste your Face API subscription key []: ********************************
+Please paste your endpoint []: https://australiaeast.api.cognitive.microsoft.com/face/v1.0
+
+The Azure Face API subscription key and endpoint have been saved to:
+
+  /home/gjw/.mlhub/azface/key.txt
+
+Detecting faces in photo:
+  photo/detection/detection2.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface01.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection3.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface02.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection6.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface03.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection1.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface04.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection5.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface05.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection4.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface06.png?raw=true)
+```console
+Detecting faces in the target photo:
+  photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
+
+Detecting faces in the candidate photo:
+  photo/identification/identification1.jpg
+
+Matching the face No. 0 ...
+
+Please close each image window (Ctrl-w) to proceed.
+```
+![](azface07.png?raw=true)
+```console
+To detect faces in provided photos:
+
+  $ ml detect azface
+```
+
+Commands
+--------
 
 * To detect faces in a photo:
 
@@ -89,7 +158,6 @@ subscription account at
   $ ml similar azface --target '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg' --candidate '~/.mlhub/azface/photo/identification/identification1.jpg'
   $ ml similar azface --target '~/.mlhub/azface/photo/identification/identification1.jpg' --candidate '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/'
   ```
-
 
 ## Reference ##
 
