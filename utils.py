@@ -46,6 +46,7 @@ option_parser.add_argument(
     '--key-file',
     type=str,
     help='file that stores Azure face API subscription key')
+    default="~/.mlhub/azface/key.txt"
 
 option_parser.add_argument(
     '--endpoint',
