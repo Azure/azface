@@ -5,16 +5,21 @@ import os
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
 
+from mlhub.pkg import (
+    azkey,
+    is_url,
+)
+
 from utils import (
+    SERVICE,
     ask_for_input,
     azface_detect,
     get_abspath,
-    is_url,
     list_files,
     option_parser,
-    setup_key_endpoint,
     show_detection_results,
 )
+
 
 # ----------------------------------------------------------------------
 # Parse command line arguments
@@ -39,7 +44,9 @@ args = parser.parse_args()
 
 face_attrs = ['age', 'gender', 'glasses', 'emotion', 'occlusion']
 
-key, endpoint = setup_key_endpoint(args.key, args.endpoint, args.key_file)
+subscription_key, endpoint = args.key, args.endpoint
+if not subscription_key or not endpoint:
+    subscription_key, endpoint = azkey(args.key_file, SERVICE)  # Request subscription key and endpoint from user.
 
 # Get the photo
 
@@ -54,9 +61,8 @@ else:
 # Call face API to detect and describe faces
 # ----------------------------------------------------------------------
 
-# Setup Azure face API client
-
-client = FaceClient(endpoint, CognitiveServicesCredentials(key))
+credentials = CognitiveServicesCredentials(subscription_key)  # Set credentials
+client = FaceClient(endpoint, credentials)  # Setup Azure face API client
 
 # Query Azure face API to detect faces
 
