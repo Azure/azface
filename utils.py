@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 import os
-import re
 import readline  # Don't remove !! For prompt of input() to take effect
 import sys
 import termios
@@ -18,18 +17,21 @@ import urllib.request
 import uuid
 
 from mlhub import utils as mlutils
+from mlhub.pkg import is_url
 
 # ----------------------------------------------------------------------
 # Constants
 # ----------------------------------------------------------------------
 
-MARK_COLOR = (0, 255, 0)  # Green.  This color has no difference in RGB (matplotlib) and BGR (OpenCV)
+MARK_COLOR = (0, 255, 0)  # Green.  This color remains the same in RGB (matplotlib) and BGR (OpenCV)
 MARK_WIDTH = 4
 TEXT_COLOR = MARK_COLOR
 LINE_WIDTH = 2
 TEXT_FONT = cv.FONT_HERSHEY_SIMPLEX
 TEXT_SIZE = 1
 
+SERVICE = "Face API"
+KEY_FILE = os.path.join(os.getcwd(), "private.txt")
 
 # ----------------------------------------------------------------------
 # Command line argument parser
@@ -45,8 +47,14 @@ option_parser.add_argument(
 option_parser.add_argument(
     '--key-file',
     type=str,
-    help='file that stores Azure face API subscription key')
-    default="~/.mlhub/azface/key.txt"
+    help='file that stores Azure face API subscription key',
+    default=KEY_FILE)
+
+# **Note**:
+# 1. The endpoint URL varies depending on the region of your service and can be found at Overview page of your service.
+#    See 'https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236'
+# 1. For Azure face API for Python, endpoint should omit the trailing part of
+#    'https://southeastasia.api.cognitive.microsoft.com/face/v1.0'
 
 option_parser.add_argument(
     '--endpoint',
@@ -88,33 +96,6 @@ def list_files(path, depth=0):
             if (depth == 0 and segs[0] == '') or len(segs) == depth:
                 for file in files:
                     yield os.path.join(root, file)
-
-
-def load_key(path):
-    """Load subscription key and endpoint from file."""
-
-    key = None
-    endpoint = None
-    markchar = "'\" \t"
-    with open(path, 'r') as file:
-        for line in file:
-            line = line.strip('\n')
-            pair = line.split('=')
-            if len(pair) == 2:
-                k = pair[0].strip(markchar).lower()
-                v = pair[1].strip(markchar)
-                if k == 'key':
-                    key = v
-                elif k == 'endpoint':
-                    endpoint = v
-            elif not line.startswith('#'):
-                line = line.strip(markchar)
-                if line.startswith('http'):
-                    endpoint = line
-                else:
-                    key = line
-
-    return key, endpoint
 
 
 def save_key(key, endpoint, path):
@@ -410,49 +391,6 @@ def mark_face(image, face, text=None):
         cv.putText(image, text, (x, y), TEXT_FONT, TEXT_SIZE, TEXT_COLOR, LINE_WIDTH)
 
 
-def get_key(key, endpoint, key_file):
-    
-    default_key_file   = 'key.txt'
-    key_from_file      = None
-    endpoint_from_file = None
-
-    if not key or not endpoint:
-
-        if key_file:
-            key_file = get_abspath(key_file)
-        else:
-            if os.path.exists(default_key_file) and os.path.getsize(default_key_file) != 0:
-                msg = """The following file has been found and is assumed to contain an Azure Face API
-subscription key and endpoint. We will load the file and use this information. 
-
-""" + os.getcwd() + "/" + default_key_file
-                print(msg)
-                key_file = default_key_file
-            else:
-                msg = """An Azure resource is required to access this service (and to run this
-demo). See the README for details of a free subscription. Then you can
-provide the key and the endpoint information here."""
-                print(msg)
-
-        if key_file:
-            key_from_file, endpoint_from_file = load_key(key_file)
-
-    key = key if key else key_from_file
-    endpoint = endpoint if endpoint else endpoint_from_file
-
-    if not key:
-        msg = "\nPlease paste your Face API subscription key []: "
-        key = ask_for_input(msg, hide=True)
-
-    if not endpoint:
-        msg = "Please paste your endpoint []: "
-        endpoint = ask_for_input(msg)
-
-    save_key(key, endpoint, default_key_file)
-
-    return key, endpoint
-
-
 def interpret_glasses(glasses):
     return glasses if glasses != 'noGlasses' else "no glasses"
 
@@ -561,21 +499,6 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
         print("No faces found in {}".format(candidate_url))
 
 
-def setup_key_endpoint(key, endpoint, key_file):
-
-    key, endpoint = get_key(key, endpoint, key_file)  # Get Azure face API key and endpoint
-
-    # **Note**:
-    # 1. The endpoint URL varies depending on the region of your service and can be found at Overview page of your service.
-    #    See 'https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236'
-    # 1. For Azure face API for Python, endpoint should omit the trailing part of
-    #    'https://southeastasia.api.cognitive.microsoft.com/face/v1.0'
-
-    endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
-
-    return key, endpoint
-
-
 def azface_add(client, img_url, name, person=None):
     """Add the face in img_url to the person name."""
 
@@ -619,27 +542,6 @@ def azface_add(client, img_url, name, person=None):
             client.person_group_person.add_face_from_url(person_group_id, person.person_id, file)
 
     return person
-
-
-# ----------------------------------------------------------------------
-# URL
-# ----------------------------------------------------------------------
-
-def is_url(url):
-    """Check if url is a valid URL."""
-
-    urlregex = re.compile(
-        r'^(?:http|ftp)s?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-
-    if re.match(urlregex, url) is not None:
-        return True
-    else:
-        return False
 
 
 # ----------------------------------------------------------------------

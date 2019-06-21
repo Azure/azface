@@ -13,36 +13,37 @@ Cognitive Services. This cloud service accepts images and can perform
 various analyses of the images, returning the results locally.
 """)
 
-# The main interface to access Azure face API:
+import os
 
-from azure.cognitiveservices.vision.face.face_client import FaceClient
-
-# To hold the subscription key:
-
-from msrest.authentication import CognitiveServicesCredentials
-
+from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
+from mlhub.pkg import azkey
+from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
 from utils import (
+    KEY_FILE,
+    SERVICE,
     azface_detect,
     azface_similar,
-    get_key,
     list_files,
     show_detection_results,
 )
+
 
 # ----------------------------------------------------------------------
 # Setup
 # ----------------------------------------------------------------------
 
-key, endpoint = get_key(None, None, None)
+# Request subscription key and endpoint from user.
 
-# **Note**:
-# 1. The endpoint URL varies depending on the region of your service and can be found at Overview page of your service.
-#    See 'https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236'
-# 1. For Azure face API for Python, endpoint should omit the trailing part of
-#    'https://southeastasia.api.cognitive.microsoft.com/face/v1.0'
+subscription_key, endpoint = azkey(KEY_FILE, SERVICE)
 
-endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
-client = FaceClient(endpoint, CognitiveServicesCredentials(key))  # Setup Azure face API client
+# Set credentials.
+
+credentials = CognitiveServicesCredentials(subscription_key)
+
+# Create client.
+
+client = FaceClient(endpoint, credentials)  # Setup Azure face API client
+
 
 # ----------------------------------------------------------------------
 # Face detection
