@@ -1,6 +1,6 @@
-print("Loading the required Python modules ...\n")
 import argparse
 import os
+import sys
 
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
@@ -82,7 +82,7 @@ if not is_url(target_url):
 
 # Query Azure face API to detect target faces
 
-print("\nDetecting faces in the target photo:\n  {}".format(target_url))
+print("\nDetecting faces in the target photo:\n  {}".format(target_url), file=sys.stderr)
 target_faces = azface_detect(client, target_url)
 
 if not target_faces:
@@ -100,7 +100,7 @@ if is_url(candidate_url):  # Photo from URL
 
     # Query Azure face API to detect candidate faces
 
-    print(msg.format(candidate_url))
+    print(msg.format(candidate_url), file=sys.stderr)
     candidate_faces = azface_detect(client, candidate_url)
 
     azface_similar(client, target_url, target_faces, candidate_url, candidate_faces)
@@ -111,13 +111,13 @@ else:  # Photo from file
     if os.path.isdir(candidate_url):
         for path in list_files(candidate_url):
 
-            print(msg.format(path))
+            print(msg.format(path), file=sys.stderr)
             candidate_faces = azface_detect(client, path)
 
             azface_similar(client, target_url, target_faces, path, candidate_faces)
 
     else:
-        print(msg.format(candidate_url))
+        print(msg.format(candidate_url), file=sys.stderr)
         candidate_faces = azface_detect(client, candidate_url)
 
         azface_similar(client, target_url, target_faces, candidate_url, candidate_faces)
