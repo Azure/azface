@@ -358,6 +358,11 @@ def getbox(face):
     return top, right, bottom, left
 
 
+def getbox_points(face):
+    top, right, bottom, left = getbox(face)
+    return left, top, left, bottom, right, bottom, right, top
+
+
 def mark_face(image, face, text=None):
     """Mark the <faces> in <image>.
 
@@ -431,6 +436,21 @@ def show_detection_results(img_url, faces):
     # Display the image in the users default image browser.
 
     display(bgr, frombgr=True, text=description)
+
+
+def output_faces(faces):
+    if faces:
+        for face in faces:
+            coordinates = ", ".join([str(x) for x in getbox_points(face)])
+            attrs = face.face_attributes
+            description = "[{}] {} years-old, {}, {}, {}, {}".format(
+                coordinates,
+                attrs.age,
+                attrs.gender,
+                interpret_glasses(attrs.glasses),
+                interpret_emotion(attrs.emotion),
+                interpret_occlusion(attrs.occlusion))
+            print(description)
 
 
 def azface_detect(client, img_url, **kwargs):

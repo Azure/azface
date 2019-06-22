@@ -49,7 +49,7 @@ args = parser.parse_args()
 
 subscription_key, endpoint = args.key, args.endpoint
 if not subscription_key or not endpoint:
-    subscription_key, endpoint = azkey(args.key_file, SERVICE)  # Request subscription key and endpoint from user.
+    subscription_key, endpoint = azkey(args.key_file, SERVICE, verbose=False)  # Request subscription key and endpoint from user.
 
 # Get the photo of target faces
 
