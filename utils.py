@@ -175,7 +175,7 @@ def ask_for_input(msg, hide=False):
 
 
 def stop(msg, status=0):
-    print(msg)
+    print(msg, file=sys.stderr)
     sys.exit(status)
 
 
@@ -431,7 +431,7 @@ def show_detection_results(img_url, faces):
                 interpret_emotion(attrs.emotion),
                 interpret_occlusion(attrs.occlusion))
     else:
-        print("    No faces found!")
+        print("    No faces found!", file=sys.stderr)
 
     # Display the image in the users default image browser.
 
@@ -475,7 +475,7 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
 
         msg = "\nMatching the face No. {} ..."
         for query_face in target_faces:
-            print(msg.format(labels[query_face.face_id]))
+            print(msg.format(labels[query_face.face_id]), file=sys.stderr)
 
             # Call Azure face API to find matches
 
@@ -508,7 +508,7 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
 
         # Plot results
 
-        print("\nPlease close each image window (Ctrl-w) to proceed.")
+        print("\nPlease close each image window (Ctrl-w) to proceed.", file=sys.stderr)
         plot_side_by_side_comparison(
             *convert_cv2matplot(target_bgr, candidate_bgr),
             leftlabel='Target faces',
@@ -516,7 +516,7 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
             rightdescription=None if not description else "Matching confidence:\n{}".format('\n'.join(description)))
 
     else:
-        print("No faces found in {}".format(candidate_url))
+        print("No faces found in {}".format(candidate_url), file=sys.stderr)
 
 
 def azface_add(client, img_url, name, person=None):

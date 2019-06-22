@@ -1,4 +1,3 @@
-print("Loading the required Python modules ...\n")
 import argparse
 
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
