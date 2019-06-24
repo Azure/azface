@@ -377,9 +377,9 @@ def show_detection_results(img_url, faces):
 def print_detection_results(faces):
     if faces:
         for face in faces:
-            coordinates = ", ".join([str(x) for x in getbox_points(face)])
+            coordinates = " ".join([str(x) for x in getbox_points(face)])
             attrs = face.face_attributes
-            description = "[{}] {} years-old, {}, {}, {}, {}".format(
+            description = "{},{},{},{},{},{}".format(
                 coordinates,
                 attrs.age,
                 attrs.gender,
@@ -463,10 +463,10 @@ def print_similar_results(candidate_faces, matches):
     if matches:
         for face in candidate_faces:
             if face.face_id in matches:
-                target_coordinates = ", ".join([str(x) for x in getbox_points(matches[face.face_id][0])])
-                match_coordinates = ", ".join([str(x) for x in getbox_points(face)])
+                target_coordinates = " ".join([str(x) for x in getbox_points(matches[face.face_id][0])])
+                match_coordinates = " ".join([str(x) for x in getbox_points(face)])
                 confidence = matches[face.face_id][1]
-                description = "[{}], [{}], {}".format(
+                description = "{},{},{}".format(
                     target_coordinates,
                     match_coordinates,
                     confidence)
