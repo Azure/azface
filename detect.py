@@ -13,7 +13,7 @@ from utils import (
     azface_detect,
     get_abspath,
     option_parser,
-    output_faces,
+    print_detection_results,
 )
 
 
@@ -53,4 +53,4 @@ if not subscription_key or not endpoint:
 credentials = CognitiveServicesCredentials(subscription_key)  # Set credentials
 client = FaceClient(endpoint, credentials)  # Setup Azure face API client
 faces = azface_detect(client, img_url, return_face_attributes=face_attrs)
-output_faces(faces)
+print_detection_results(faces)
