@@ -14,7 +14,6 @@ from utils import (
     azface_detect,
     azface_similar,
     get_abspath,
-    getbox_points,
     option_parser,
     print_similar_results,
     stop,

@@ -1,16 +1,15 @@
-Face Recognition Service
-========================
+# Face Recognition Service #
 
 This [MLHub](https://mlhub.ai) package provides a quick introduction
 to the pre-built Face models provided through the face API of
 Microsoft Azure's Cognitive Services.
 
-A free Azure subscription allowing up to 5,000 transactions per month
-is available from https://azure.microsoft.com/free/.  Once set up
-visit https://ms.portal.azure.com and Create a resource under AI and
-Machine Learning called Face. Once created you can access the web API
-subscription key from the portal. This will be prompted for in the
-demo.
+A free Azure subscription allowing up to 30,000 transactions in 7 days
+(20 per minute) is available from https://azure.microsoft.com/free/.
+Once set up visit https://ms.portal.azure.com and Create a resource
+under AI and Machine Learning called Face.  Once created you can
+access the web API subscription key from the portal.  This will be
+prompted for in the demo.
 
 Please note that this is *closed source software* which limits your
 freedoms and has no guarantee of ongoing availability.
@@ -36,8 +35,7 @@ Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
   $ ml configure azface
   ```
 
-Demonstration
--------------
+## Demonstration ##
 
 ```console
 $ ml demo azface
@@ -113,21 +111,30 @@ To detect faces in provided photos:
   $ ml detect azface
 ```
 
-Commands
---------
+## Commands ##
+
+Besides the `demo` command, other commands such as `detect` and
+`similar` are also provided, but they are more pipeline oriented,
+which means the output will be CSV-like text that makes them easily be
+incorporated into a command line pipeline.
 
 * To detect faces in a photo:
 
   ```console
-  $ ml detect azface
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg
+  302 202 302 315 415 315 415 202,31.0,male,no glasses,happiness,no occlusion
+  398 238 398 329 489 329 489 238,30.0,female,no glasses,happiness,no occlusion
+  495 238 495 320 577 320 577 238,4.0,female,no glasses,happiness,no occlusion
+  211 162 211 243 292 243 292 162,6.0,male,no glasses,happiness,no occlusion
   ```
   
-  It will ask for your Azure face API key, endpoint, as well as a URL
-  or path of a photo to detect faces.  You also can provide these by
-  command line options:
+  It will ask for your Azure face API key and endpoint the first time
+  you use this command, then it will detect faces in the photo you
+  provide.  The photo can be a path or URL to an image.  You also can
+  provide the key and endpoint by command line options:
   
   ```console
-  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' --photo '~/.mlhub/azface/photo/detection'
+  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' ~/.mlhub/azface/photo/identification/identification1.jpg
   ```
 
   Key and endpoint can also be stored in a file such as `key.txt`:
@@ -140,13 +147,13 @@ Commands
   And they can be read by:
   
   ```console
-  $ ml detect azface --key-file key.txt --photo '~/.mlhub/azface/photo/detection'
+  $ ml detect azface --key-file key.txt ~/.mlhub/azface/photo/identification/identification1.jpg
   ```
 
 * To find similar faces between two photos:
 
   ```console
-  $ ml similar azface --target xxx.jpg --candidate yyy.jpg --key-file zzz.txt
+  $ ml similar azface xxx.jpg yyy.jpg
   ```
   
   Thus all faces in `yyy.jpg` that are similar to the faces in
@@ -155,9 +162,46 @@ Commands
   **Examples**:
 
   ```console
-  $ ml similar azface --target '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg' --candidate '~/.mlhub/azface/photo/identification/identification1.jpg'
-  $ ml similar azface --target '~/.mlhub/azface/photo/identification/identification1.jpg' --candidate '~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/'
+  $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
   ```
+
+
+## Pipeline ##
+
+* To see how many faces in a photo (for example,
+  `~/.mlhub/azface/photo/identification/identification1.jpg`)
+  ![](photo/identification/identification1.jpg?raw=true)
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | wc -l
+  4
+  ```
+
+* To tally the number of males and females in the photo:
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | 
+      cut -d ',' -f 3 | 
+	  sort | 
+	  uniq -c
+        2 female
+        2 male
+  ```
+
+* To find the youngest face in a photo:
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg |
+      sort -t ',' -k 2 -n |
+	  head -1 |
+	  cut -d ',' -f 1 |
+	  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+	  awk '{print "~/.mlhub/azface/photo/identification/identification1.jpg -fill none -stroke red -strokewidth 5 " $0 "result.png"}' |
+	  xargs -I@ bash -c 'convert @'
+  $ xdg-open result.png
+  ```
+  ![](azface08.png?raw=true)
+
 
 ## Reference ##
 
