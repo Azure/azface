@@ -1,6 +1,5 @@
 import argparse
 import cv2 as cv
-import glob
 import hashlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -8,9 +7,7 @@ import numpy as np
 import os
 import readline  # Don't remove !! For prompt of input() to take effect
 import sys
-import termios
 import toolz
-import tty
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -98,13 +95,6 @@ def list_files(path, depth=0):
                     yield os.path.join(root, file)
 
 
-def save_key(key, endpoint, path):
-    """Save subscription key and endpoint into file."""
-
-    with open(path, 'w') as file:
-        file.write("key = {}\nendpoint = {}\n".format(key, endpoint))
-
-
 def download_img(url, folder, prefix):
     """Download image from <url> into <folder> with name as <prefix>_<md5>."""
 
@@ -161,63 +151,9 @@ def make_name_dir(path, name):
     return name_dir_path
 
 
-def ask_for_input(msg, hide=False):
-    prompt = getpass if hide else input
-    if prompt == input:  # Setup input path completion
-        readline.set_completer_delims('\t')
-        readline.parse_and_bind("tab: complete")
-        readline.set_completer(tab_complete_path)
-
-    res = prompt(msg)
-    while res.strip() == '':
-        res = prompt("> ")
-    return res
-
-
 def stop(msg, status=0):
     print(msg, file=sys.stderr)
     sys.exit(status)
-
-
-def getpass(prompt=None):
-    """Simple input for password.
-
-    It will echo '*' for every input character instead of the one per se.
-    It only implement the basic I/O functionality, so only Backspace is supported.
-    No support for Delete, Left key, Right key and any other line editing are supported.
-
-    Reference: https://mail.python.org/pipermail/python-list/2011-December/615955.html
-    """
-    symbol = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?"
-    if prompt:
-        sys.stdout.write(prompt)
-        sys.stdout.flush()
-
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    chars = []
-    try:
-        tty.setraw(sys.stdin.fileno())
-        while True:
-            c = sys.stdin.read(1)
-            if c in '\n\r':  # Enter.
-                break
-            if c == '\003':
-                raise KeyboardInterrupt
-            if c == '\x7f':  # Backspace.
-                if chars:
-                    sys.stdout.write('\b \b')
-                    sys.stdout.flush()
-                    del chars[-1]
-                continue
-            if c.isalnum() or c in symbol:
-                sys.stdout.write('*')
-                sys.stdout.flush()
-                chars.append(c)
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        sys.stdout.write('\n')
-    return ''.join(chars)
 
 
 # ----------------------------------------------------------------------
@@ -438,7 +374,7 @@ def show_detection_results(img_url, faces):
     display(bgr, frombgr=True, text=description)
 
 
-def output_faces(faces):
+def print_detection_results(faces):
     if faces:
         for face in faces:
             coordinates = ", ".join([str(x) for x in getbox_points(face)])
@@ -467,15 +403,12 @@ def azface_detect(client, img_url, **kwargs):
     return faces
 
 
-def azface_similar(client, target_url, target_faces, candidate_url, candidate_faces):
+def azface_similar(client, target_faces, candidate_faces):
+    matches = {}
     if candidate_faces:
-        matches = {}
         candidate_ids = [x.face_id for x in candidate_faces]
-        labels = {face.face_id: str(i) for i, face in enumerate(target_faces)}
 
-        msg = "\nMatching the face No. {} ..."
         for query_face in target_faces:
-            print(msg.format(labels[query_face.face_id]), file=sys.stderr)
 
             # Call Azure face API to find matches
 
@@ -488,6 +421,13 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
                 match_face = next(x for x in candidate_faces if x.face_id == best_match.face_id)
                 if match_face.face_id not in matches or matches[match_face.face_id][1] < best_match.confidence:
                     matches[match_face.face_id] = (query_face, best_match.confidence)
+
+    return matches
+
+
+def show_similar_results(target_url, target_faces, candidate_url, candidate_faces, matches):
+    if candidate_faces:
+        labels = {face.face_id: str(i) for i, face in enumerate(target_faces)}
 
         # Mark matched faces
 
@@ -517,6 +457,20 @@ def azface_similar(client, target_url, target_faces, candidate_url, candidate_fa
 
     else:
         print("No faces found in {}".format(candidate_url), file=sys.stderr)
+
+
+def print_similar_results(candidate_faces, matches):
+    if matches:
+        for face in candidate_faces:
+            if face.face_id in matches:
+                target_coordinates = ", ".join([str(x) for x in getbox_points(matches[face.face_id][0])])
+                match_coordinates = ", ".join([str(x) for x in getbox_points(face)])
+                confidence = matches[face.face_id][1]
+                description = "[{}], [{}], {}".format(
+                    target_coordinates,
+                    match_coordinates,
+                    confidence)
+                print(description)
 
 
 def azface_add(client, img_url, name, person=None):
@@ -562,17 +516,3 @@ def azface_add(client, img_url, name, person=None):
             client.person_group_person.add_face_from_url(person_group_id, person.person_id, file)
 
     return person
-
-
-# ----------------------------------------------------------------------
-# readline
-# ----------------------------------------------------------------------
-
-def tab_complete_path(text, state):
-    if '~' in text:
-        text = os.path.expanduser('~')
-
-    if os.path.isdir(text):
-        text += '/'
-
-    return [x for x in glob.glob(text + '*')][state]

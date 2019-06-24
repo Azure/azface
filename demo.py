@@ -13,8 +13,6 @@ Cognitive Services. This cloud service accepts images and can perform
 various analyses of the images, returning the results locally.
 """)
 
-import os
-
 from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
 from mlhub.pkg import azkey
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
@@ -25,6 +23,7 @@ from utils import (
     azface_similar,
     list_files,
     show_detection_results,
+    show_similar_results,
 )
 
 
@@ -82,4 +81,5 @@ target_faces = azface_detect(client, target_url)
 msg = "\nDetecting faces in the candidate photo:\n  {}"
 print(msg.format(candidate_url))
 candidate_faces = azface_detect(client, candidate_url)
-azface_similar(client, target_url, target_faces, candidate_url, candidate_faces)
+matches = azface_similar(client, target_faces, candidate_faces)
+show_similar_results(target_url, target_faces, candidate_url, candidate_faces, matches)
