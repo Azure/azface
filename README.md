@@ -65,37 +65,37 @@ Detecting faces in photo:
   photo/detection/detection2.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface01.png?raw=true)
+![](result/azface01.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection3.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface02.png?raw=true)
+![](result/azface02.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection6.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface03.png?raw=true)
+![](result/azface03.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection1.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface04.png?raw=true)
+![](result/azface04.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection5.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface05.png?raw=true)
+![](result/azface05.png?raw=true)
 ```console
 Detecting faces in photo:
   photo/detection/detection4.jpg
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface06.png?raw=true)
+![](result/azface06.png?raw=true)
 ```console
 Detecting faces in the target photo:
   photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
@@ -107,7 +107,7 @@ Matching the face No. 0 ...
 
 Please close each image window (Ctrl-w) to proceed.
 ```
-![](azface07.png?raw=true)
+![](result/azface07.png?raw=true)
 ```console
 To detect faces in provided photos:
 
@@ -207,12 +207,15 @@ incorporated into a command line pipeline.
 	  xargs -I@ bash -c 'convert @'
   $ xdg-open result.png
   ```
-  ![](azface08.png?raw=true)
+  ![](result/azface08.png?raw=true)
 
 * To see how many faces in a photo
-  (`~/.mlhub/azface/photo/identification/identification1.jpg`) similar
-  to that in another photo
+  (`~/.mlhub/azface/photo/identification/identification1.jpg`)
+  ![](photo/identification/identification1.jpg?raw=true)
+  
+  similar to that in another photo
   (`~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`):
+  ![](photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg?raw=true)
 
   ```console
   $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg | 
@@ -221,48 +224,39 @@ incorporated into a command line pipeline.
   1
   ```
   
-* To mark the faces similar in both photos:
+* To mark the faces similar between the photos
+  `~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`
+  and `~/.mlhub/azface/photo/identification/identification1.jpg`, put
+  the following script into a file called `result.sh`:
 
-  ```console
+  ```bash
+  TARGET=$1
+  CANDIDATE=$2
+
+  ml similar azface ${TARGET} ${CANDIDATE} > result.txt
+
+  for line in "$(cat result.txt | awk -F ',' '$1 != "" && $2 != "" {print $0}')"; do
+      echo "${line}" | \
+	    awk -F ',' '{print $1}' | \
+		xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " | \
+		awk -v TARGET="${TARGET}" '{print TARGET " -fill none -stroke red -strokewidth 5 " $0 "result1.png"}' | \
+		xargs -I@ bash -c 'convert @'
+      echo "${line}" | \
+	    awk -F ',' '{print $2}' | \
+		xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " | \
+		awk -v CANDIDATE="${CANDIDATE}" '{print CANDIDATE " -fill none -stroke red -strokewidth 5 " $0 "result2.png"}' | \
+		xargs -I@ bash -c 'convert @'
+      montage -background '#336699' -geometry +4+4 result1.png result2.png result.png
+      xdg-open result.png
+  done
+  ```
   
-  ```
-
-
-## Pipeline ##
-
-* To see how many faces in a photo (for example,
-  `~/.mlhub/azface/photo/identification/identification1.jpg`)
-  ![](photo/identification/identification1.jpg?raw=true)
-
+  then run the following command:
+  
   ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | wc -l
-  4
+  $ bash result.sh ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
   ```
-
-* To tally the number of males and females in the photo:
-
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | 
-      cut -d ',' -f 3 | 
-	  sort | 
-	  uniq -c
-        2 female
-        2 male
-  ```
-
-* To find the youngest face in a photo:
-
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg |
-      sort -t ',' -k 2 -n |
-	  head -1 |
-	  cut -d ',' -f 1 |
-	  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
-	  awk '{print "~/.mlhub/azface/photo/identification/identification1.jpg -fill none -stroke red -strokewidth 5 " $0 "result.png"}' |
-	  xargs -I@ bash -c 'convert @'
-  $ xdg-open result.png
-  ```
-  ![](azface08.png?raw=true)
+  ![](result/azface09.png?raw=true)
 
 
 ## Reference ##
