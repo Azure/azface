@@ -290,8 +290,7 @@ $ ml detect azface  3818.jpg |
 
 $ eog result.png 
 ```
-!()[~/.mlhub/azface/photo/3818bb.png]
-
+!()[photo/3818bb.png?raw=true]
 
 ## Reference ##
 
