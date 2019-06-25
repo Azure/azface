@@ -2,14 +2,20 @@
 
 This [MLHub](https://mlhub.ai) package provides a quick introduction
 to the pre-built Face models provided through the face API of
-Microsoft Azure's Cognitive Services.
+Azure's Cognitive Services.
 
-A free Azure subscription allowing up to 30,000 transactions in 7 days
-(20 per minute) is available from https://azure.microsoft.com/free/.
-Once set up visit https://ms.portal.azure.com and Create a resource
-under AI and Machine Learning called Face.  Once created you can
-access the web API subscription key from the portal.  This will be
-prompted for in the demo.
+In addition to the demonstration this package provides a collection of
+stand alone commands that turn the service into useful *command line
+tools* for detecting faces in supplied photos together with age,
+gender, expression, and other observations about the face, and
+identifying faces similar to a given face in a photo.
+
+A free Azure subscription allowing up to 30,000 transactions per month
+is available from https://azure.microsoft.com/free/.  Once set up
+visit https://ms.portal.azure.com and Create a resource under AI and
+Machine Learning called Face.  Once created you can access the web API
+subscription key from the portal.  This will be prompted for in the
+demo.
 
 This package is part of the [Azure on
 MLHub](https://github.com/Azure/mlhub) repository. Please note that
