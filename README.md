@@ -258,6 +258,40 @@ incorporated into a command line pipeline.
   ```
   ![](result/azface09.png?raw=true)
 
+* To count the number of faces in a crowd (for example, 
+  `http://www.allwhitebackground.com/images/3/3818.jpg`)
+  ![](http://www.allwhitebackground.com/images/3/3818.jpg)
+  
+  ```console
+  $ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | wc -l
+  35
+  ```
+* Males and Females:
+
+```console
+$ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | 
+  cut -d ',' -f 3 | 
+  sort | 
+  uniq -c
+     20 female
+     15 male
+```
+
+* Bounding boxes:
+
+```console
+$ wget http://www.allwhitebackground.com/images/3/3818.jpg
+
+$ ml detect azface  3818.jpg | 
+  cut -d ',' -f 1 | 
+  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+  awk '{print "3818.jpg -fill none -stroke red -strokewidth 5 " $0 "3818bb.png"}' |
+  xargs -I@ bash -c 'convert @'
+
+$ eog result.png 
+```
+!()[~/.mlhub/azface/photo/3818bb.png]
+
 
 ## Reference ##
 
