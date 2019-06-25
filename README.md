@@ -11,11 +11,14 @@ under AI and Machine Learning called Face.  Once created you can
 access the web API subscription key from the portal.  This will be
 prompted for in the demo.
 
-Please note that this is *closed source software* which limits your
-freedoms and has no guarantee of ongoing availability.
+This package is part of the [Azure on
+MLHub](https://github.com/Azure/mlhub) repository. Please note that
+these Azure models, unlike the MLHub models in general, use *closed
+source services* which have no guarantee of ongoing availability and
+do not come with the freedom to modify and share.
 
 Visit the github repository for more details:
-https://github.com/gjwgit/azface
+https://github.com/simonzhaoms/azface
 
 The Python code is based on the [Microsoft Azure Face API
 Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
