@@ -283,6 +283,11 @@ def display(img, frombgr=False, text=None):
 # Face
 # ----------------------------------------------------------------------
 
+def get_face_api_key_endpoint(subscription_key, endpoint):
+    endpoint = '/'.join(endpoint.split('/')[:3])  # Remove any trailing path
+    return subscription_key, endpoint
+
+
 def getbox(face):
     """Convert width and height in face to a point in a rectangle"""
 
@@ -459,18 +464,37 @@ def show_similar_results(target_url, target_faces, candidate_url, candidate_face
         print("No faces found in {}".format(candidate_url), file=sys.stderr)
 
 
-def print_similar_results(candidate_faces, matches):
+def print_similar_results(target_faces, candidate_faces, matches):
+    target_ids = {face.face_id: face for face in target_faces}
+    candidate_ids = {face.face_id: face for face in candidate_faces}
+
+    # matched faces
+
     if matches:
         for face in candidate_faces:
             if face.face_id in matches:
-                target_coordinates = " ".join([str(x) for x in getbox_points(matches[face.face_id][0])])
+                target_face, confidence = matches[face.face_id]
+                del target_ids[target_face.face_id]
+                del candidate_ids[face.face_id]
+                target_coordinates = " ".join([str(x) for x in getbox_points(target_face)])
                 match_coordinates = " ".join([str(x) for x in getbox_points(face)])
-                confidence = matches[face.face_id][1]
                 description = "{},{},{}".format(
                     target_coordinates,
                     match_coordinates,
                     confidence)
                 print(description)
+
+    # unmatched faces
+
+    for face in target_ids.values():
+        target_coordinates = " ".join([str(x) for x in getbox_points(face)])
+        description = "{},,".format(target_coordinates)
+        print(description)
+
+    for face in candidate_ids.values():
+        match_coordinates = " ".join([str(x) for x in getbox_points(face)])
+        description = ",{},".format(match_coordinates)
+        print(description)
 
 
 def azface_add(client, img_url, name, person=None):

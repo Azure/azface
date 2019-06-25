@@ -14,6 +14,7 @@ from utils import (
     azface_detect,
     azface_similar,
     get_abspath,
+    get_face_api_key_endpoint,
     option_parser,
     print_similar_results,
     stop,
@@ -54,7 +55,7 @@ if os.path.isdir(target_url) or os.path.isdir(candidate_url):
 # ----------------------------------------------------------------------
 
 if not subscription_key or not endpoint:  # Request subscription key and endpoint from user.
-    subscription_key, endpoint = azkey(args.key_file, SERVICE, verbose=False)
+    subscription_key, endpoint = get_face_api_key_endpoint(*azkey(args.key_file, SERVICE, verbose=False))
 
 credentials = CognitiveServicesCredentials(subscription_key)  # Set credentials
 client = FaceClient(endpoint, credentials)  # Setup Azure face API client
@@ -75,4 +76,4 @@ if not target_faces or not candidate_faces:
 # ----------------------------------------------------------------------
 
 matches = azface_similar(client, target_faces, candidate_faces)
-print_similar_results(candidate_faces, matches)
+print_similar_results(target_faces, candidate_faces, matches)

@@ -163,6 +163,10 @@ incorporated into a command line pipeline.
 
   ```console
   $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
+  14 59 14 205 160 205 160 59,302 202 302 315 415 315 415 202,0.7665841
+  ,398 238 398 329 489 329 489 238,
+  ,495 238 495 320 577 320 577 238,
+  ,211 162 211 243 292 243 292 162,
   ```
 
 
@@ -202,6 +206,23 @@ incorporated into a command line pipeline.
   ```
   ![](azface08.png?raw=true)
 
+* To see how many faces in a photo
+  (`~/.mlhub/azface/photo/identification/identification1.jpg`) similar
+  to that in another photo
+  (`~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`):
+
+  ```console
+  $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg | 
+      awk -F ',' '$1 != "" && $2 != "" {print $0}' | 
+	  wc -l
+  1
+  ```
+  
+* To mark the faces similar in both photos:
+
+  ```console
+  
+  ```
 
 ## Reference ##
 
