@@ -293,6 +293,29 @@ $ eog result.png
 
 ![](photo/3818bb.png?raw=true)
 
+* How many might be wearing a cap (have their forehead occluded):
+
+```console
+$ ml detect azface http://www.allwhitebackground.com/images/3/3818.jpg | 
+  grep forehead_occluded |
+  wc -l
+4
+```
+
+But there looks like just 3 are wearing caps. So let's check who:
+
+```console
+$ ml detect azface 3818.jpg |
+  grep forehead_occluded |
+  cut -d ',' -f 1 | 
+  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+  awk '{print "3818.jpg -fill none -stroke red -strokewidth 5 " $0 "3818cap.png"}' |
+  xargs -I@ bash -c 'convert @'
+
+$ eog 3818cap.png
+```
+![](photo/3818cap.png?raw=true)
+
 ## Reference ##
 
 * [Quickstart: Create a Python script to detect and frame faces in an image](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinPythonTutorial)
