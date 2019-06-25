@@ -166,6 +166,65 @@ incorporated into a command line pipeline.
 
   ```console
   $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
+  14 59 14 205 160 205 160 59,302 202 302 315 415 315 415 202,0.7665841
+  ,398 238 398 329 489 329 489 238,
+  ,495 238 495 320 577 320 577 238,
+  ,211 162 211 243 292 243 292 162,
+  ```
+
+
+## Pipeline ##
+
+* To see how many faces in a photo (for example,
+  `~/.mlhub/azface/photo/identification/identification1.jpg`)
+  ![](photo/identification/identification1.jpg?raw=true)
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | wc -l
+  4
+  ```
+
+* To tally the number of males and females in the photo:
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | 
+      cut -d ',' -f 3 | 
+	  sort | 
+	  uniq -c
+        2 female
+        2 male
+  ```
+
+* To find the youngest face in a photo:
+
+  ```console
+  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg |
+      sort -t ',' -k 2 -n |
+	  head -1 |
+	  cut -d ',' -f 1 |
+	  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+	  awk '{print "~/.mlhub/azface/photo/identification/identification1.jpg -fill none -stroke red -strokewidth 5 " $0 "result.png"}' |
+	  xargs -I@ bash -c 'convert @'
+  $ xdg-open result.png
+  ```
+  ![](azface08.png?raw=true)
+
+* To see how many faces in a photo
+  (`~/.mlhub/azface/photo/identification/identification1.jpg`) similar
+  to that in another photo
+  (`~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`):
+
+  ```console
+  $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg | 
+      awk -F ',' '$1 != "" && $2 != "" {print $0}' | 
+	  wc -l
+  1
+  ```
+  
+* To mark the faces similar in both photos:
+
+  ```console
+  
   ```
 
 

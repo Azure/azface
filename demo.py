@@ -21,6 +21,7 @@ from utils import (
     SERVICE,
     azface_detect,
     azface_similar,
+    get_face_api_key_endpoint,
     list_files,
     show_detection_results,
     show_similar_results,
@@ -33,7 +34,7 @@ from utils import (
 
 # Request subscription key and endpoint from user.
 
-subscription_key, endpoint = azkey(KEY_FILE, SERVICE)
+subscription_key, endpoint = get_face_api_key_endpoint(*azkey(KEY_FILE, SERVICE))
 
 # Set credentials.
 
