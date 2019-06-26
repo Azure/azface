@@ -1,13 +1,13 @@
 --- # Azure face demo
 meta:
   name      : azface
-  title     : Simple Azure face API demo.
+  title     : Azure Face API demo.
   languages : py
-  version   : 2.0.2
+  version   : 2.0.3
   keywords  : face recognition, python3, computer vision
   license   : gpl3
   display   : detect, similar
-  url       : https://github.com/simonzhaoms/azface
+  url       : https://github.com/Azure/azface
 dependencies:
   system: cmake
   python3:
