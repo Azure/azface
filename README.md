@@ -2,14 +2,20 @@
 
 This [MLHub](https://mlhub.ai) package provides a quick introduction
 to the pre-built Face models provided through the face API of
-Microsoft Azure's Cognitive Services.
+Azure's Cognitive Services.
 
-A free Azure subscription allowing up to 30,000 transactions in 7 days
-(20 per minute) is available from https://azure.microsoft.com/free/.
-Once set up visit https://ms.portal.azure.com and Create a resource
-under AI and Machine Learning called Face.  Once created you can
-access the web API subscription key from the portal.  This will be
-prompted for in the demo.
+In addition to the demonstration this package provides a collection of
+stand alone commands that turn the service into useful *command line
+tools* for detecting faces in supplied photos together with age,
+gender, expression, and other observations about the face, and
+identifying faces similar to a given face in a photo.
+
+A free Azure subscription allowing up to 30,000 transactions per month
+is available from https://azure.microsoft.com/free/.  Once set up
+visit https://ms.portal.azure.com and Create a resource under AI and
+Machine Learning called Face.  Once created you can access the web API
+subscription key from the portal.  This will be prompted for in the
+demo.
 
 This package is part of the [Azure on
 MLHub](https://github.com/Azure/mlhub) repository. Please note that
@@ -258,6 +264,63 @@ incorporated into a command line pipeline.
   ```
   ![](result/azface09.png?raw=true)
 
+* To count the number of faces in a crowd (for example, 
+  `http://www.allwhitebackground.com/images/3/3818.jpg`)
+  ![](http://www.allwhitebackground.com/images/3/3818.jpg)
+  
+  ```console
+  $ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | wc -l
+  35
+  ```
+* Males and Females:
+
+```console
+$ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | 
+  cut -d ',' -f 3 | 
+  sort | 
+  uniq -c
+     20 female
+     15 male
+```
+
+* Bounding boxes:
+
+```console
+$ wget http://www.allwhitebackground.com/images/3/3818.jpg
+
+$ ml detect azface  3818.jpg | 
+  cut -d ',' -f 1 | 
+  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+  awk '{print "3818.jpg -fill none -stroke red -strokewidth 5 " $0 "3818bb.png"}' |
+  xargs -I@ bash -c 'convert @'
+
+$ eog result.png 
+```
+
+![](photo/3818bb.png?raw=true)
+
+* How many might be wearing a cap (have their forehead occluded):
+
+```console
+$ ml detect azface http://www.allwhitebackground.com/images/3/3818.jpg | 
+  grep forehead_occluded |
+  wc -l
+4
+```
+
+But there looks like just 3 are wearing caps. So let's check who:
+
+```console
+$ ml detect azface 3818.jpg |
+  grep forehead_occluded |
+  cut -d ',' -f 1 | 
+  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+  awk '{print "3818.jpg -fill none -stroke red -strokewidth 5 " $0 "3818cap.png"}' |
+  xargs -I@ bash -c 'convert @'
+
+$ eog 3818cap.png
+```
+![](photo/3818cap.png?raw=true)
 
 ## Reference ##
 
