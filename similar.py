@@ -1,7 +1,13 @@
 import argparse
 import os
 
-from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
+from packaging import version
+import azure.cognitiveservices.vision.face as faceAPI
+if version.parse(faceAPI.__version__) <= version.parse('0.3.0'):
+    from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
+else:
+    from azure.cognitiveservices.vision.face import FaceClient
+
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
 
 from mlhub.pkg import (

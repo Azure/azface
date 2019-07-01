@@ -13,7 +13,12 @@ Cognitive Services. This cloud service accepts images and can perform
 various analyses of the images, returning the results locally.
 """)
 
-from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
+from packaging import version
+import azure.cognitiveservices.vision.face as faceAPI
+if version.parse(faceAPI.__version__) <= version.parse('0.3.0'):
+    from azure.cognitiveservices.vision.face.face_client import FaceClient  # The main interface to access Azure face API
+else:
+    from azure.cognitiveservices.vision.face import FaceClient
 from mlhub.pkg import azkey
 from msrest.authentication import CognitiveServicesCredentials  # To hold the subscription key
 from utils import (

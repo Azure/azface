@@ -12,6 +12,7 @@ dependencies:
   system: cmake
   python3:
     - matplotlib
+    - packaging
     - toolz
   pip3:
     - azure-cognitiveservices-vision-face
