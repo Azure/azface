@@ -33,16 +33,16 @@ Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
 
 * To install mlhub (e.g., Ubuntu 18.04 LTS)
 
-  ```console
-  $ pip3 install mlhub
-  ```
+```console
+$ pip3 install mlhub
+```
 
 * To install and configure the pre-built model:
 
-  ```console
-  $ ml install azface
-  $ ml configure azface
-  ```
+```console
+$ ml install azface
+$ ml configure azface
+```
 
 ## Command Line Tools
 
@@ -58,56 +58,56 @@ pipeline.
 
 To detect faces in a photo:
 
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg
-  302 202 302 315 415 315 415 202,31.0,male,no glasses,happiness,no occlusion
-  398 238 398 329 489 329 489 238,30.0,female,no glasses,happiness,no occlusion
-  495 238 495 320 577 320 577 238,4.0,female,no glasses,happiness,no occlusion
-  211 162 211 243 292 243 292 162,6.0,male,no glasses,happiness,no occlusion
-  ```
+```console
+$ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg
+302 202 302 315 415 315 415 202,31.0,male,no glasses,happiness,no occlusion
+398 238 398 329 489 329 489 238,30.0,female,no glasses,happiness,no occlusion
+495 238 495 320 577 320 577 238,4.0,female,no glasses,happiness,no occlusion
+211 162 211 243 292 243 292 162,6.0,male,no glasses,happiness,no occlusion
+```
   
   It will ask for your Azure face API key and endpoint the first time
   you use this command, then it will detect faces in the photo you
   provide.  The photo can be a path or URL to an image.  You also can
   provide the key and endpoint by command line options:
   
-  ```console
-  $ ml detect azface --key 'xxx' --endpoint 'https://yyy' ~/.mlhub/azface/photo/identification/identification1.jpg
-  ```
+```console
+$ ml detect azface --key 'xxx' --endpoint 'https://yyy' ~/.mlhub/azface/photo/identification/identification1.jpg
+```
 
   Key and endpoint can also be stored in a file such as `key.txt`:
   
-  ```
-  key = 'xxx'
-  endpoint = 'https://yyy'
-  ```
+```
+key = 'xxx'
+endpoint = 'https://yyy'
+```
 
   And they can be read by:
   
-  ```console
-  $ ml detect azface --key-file key.txt ~/.mlhub/azface/photo/identification/identification1.jpg
-  ```
+```console
+$ ml detect azface --key-file key.txt ~/.mlhub/azface/photo/identification/identification1.jpg
+```
 
 **similar**
 
 To find similar faces between two photos:
 
-  ```console
-  $ ml similar azface xxx.jpg yyy.jpg
-  ```
+```console
+$ ml similar azface xxx.jpg yyy.jpg
+```
   
   Thus all faces in `yyy.jpg` that are similar to the faces in
   `xxx.jpg` will be found.
 
   **Examples**:
 
-  ```console
-  $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
-  14 59 14 205 160 205 160 59,302 202 302 315 415 315 415 202,0.7665841
-  ,398 238 398 329 489 329 489 238,
-  ,495 238 495 320 577 320 577 238,
-  ,211 162 211 243 292 243 292 162,
-  ```
+```console
+$ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
+14 59 14 205 160 205 160 59,302 202 302 315 415 315 415 202,0.7665841
+,398 238 398 329 489 329 489 238,
+,495 238 495 320 577 320 577 238,
+,211 162 211 243 292 243 292 162,
+```
 
 ## Pipeline ##
 
@@ -115,34 +115,34 @@ To find similar faces between two photos:
   `~/.mlhub/azface/photo/identification/identification1.jpg`)
   ![](photo/identification/identification1.jpg?raw=true)
 
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | wc -l
-  4
-  ```
+```console
+$ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | wc -l
+4
+```
 
 * To tally the number of males and females in the photo:
 
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | 
-      cut -d ',' -f 3 | 
-	  sort | 
-	  uniq -c
-        2 female
-        2 male
-  ```
+```console
+$ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg | 
+  cut -d ',' -f 3 | 
+  sort | 
+  uniq -c
+2 female
+2 male
+```
 
 * To find the youngest face in a photo:
 
-  ```console
-  $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg |
-      sort -t ',' -k 2 -n |
-	  head -1 |
-	  cut -d ',' -f 1 |
-	  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
-	  awk '{print "~/.mlhub/azface/photo/identification/identification1.jpg -fill none -stroke red -strokewidth 5 " $0 "result.png"}' |
-	  xargs -I@ bash -c 'convert @'
-  $ xdg-open result.png
-  ```
+```console
+$ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg |
+  sort -t ',' -k 2 -n |
+  head -1 |
+  cut -d ',' -f 1 |
+  xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+  awk '{print "~/.mlhub/azface/photo/identification/identification1.jpg -fill none -stroke red -strokewidth 5 " $0 "result.png"}' |
+  xargs -I@ bash -c 'convert @'
+$ xdg-open result.png
+```
   ![](result/azface08.png?raw=true)
 
 * To see how many faces in a photo
@@ -153,55 +153,55 @@ To find similar faces between two photos:
   (`~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`):
   ![](photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg?raw=true)
 
-  ```console
-  $ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg | 
-      awk -F ',' '$1 != "" && $2 != "" {print $0}' | 
-	  wc -l
-  1
-  ```
+```console
+$ ml similar azface ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg | 
+  awk -F ',' '$1 != "" && $2 != "" {print $0}' | 
+  wc -l
+1
+```
   
 * To mark the faces similar between the photos
   `~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg`
   and `~/.mlhub/azface/photo/identification/identification1.jpg`, put
   the following script into a file called `result.sh`:
 
-  ```bash
-  TARGET=$1
-  CANDIDATE=$2
+```bash
+TARGET=$1
+CANDIDATE=$2
 
-  ml similar azface ${TARGET} ${CANDIDATE} > result.txt
+ml similar azface ${TARGET} ${CANDIDATE} > result.txt
 
-  for line in "$(cat result.txt | awk -F ',' '$1 != "" && $2 != "" {print $0}')"; do
-      echo "${line}" | \
-	    awk -F ',' '{print $1}' | \
-		xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " | \
-		awk -v TARGET="${TARGET}" '{print TARGET " -fill none -stroke red -strokewidth 5 " $0 "result1.png"}' | \
-		xargs -I@ bash -c 'convert @'
-      echo "${line}" | \
-	    awk -F ',' '{print $2}' | \
-		xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " | \
-		awk -v CANDIDATE="${CANDIDATE}" '{print CANDIDATE " -fill none -stroke red -strokewidth 5 " $0 "result2.png"}' | \
-		xargs -I@ bash -c 'convert @'
-      montage -background '#336699' -geometry +4+4 result1.png result2.png result.png
-      xdg-open result.png
-  done
-  ```
+for line in "$(cat result.txt | awk -F ',' '$1 != "" && $2 != "" {print $0}')"; do
+  echo "${line}" |
+    awk -F ',' '{print $1}' |
+    xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+    awk -v TARGET="${TARGET}" '{print TARGET " -fill none -stroke red -strokewidth 5 " $0 "result1.png"}' |
+	xargs -I@ bash -c 'convert @'
+  echo "${line}" |
+    awk -F ',' '{print $2}' |
+    xargs printf "-draw \'polygon %s,%s %s,%s %s,%s %s,%s\' " |
+    awk -v CANDIDATE="${CANDIDATE}" '{print CANDIDATE " -fill none -stroke red -strokewidth 5 " $0 "result2.png"}' |
+    xargs -I@ bash -c 'convert @'
+  montage -background '#336699' -geometry +4+4 result1.png result2.png result.png
+  xdg-open result.png
+done
+```
   
   then run the following command:
   
-  ```console
-  $ bash result.sh ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
-  ```
+```console
+$ bash result.sh ~/.mlhub/azface/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg ~/.mlhub/azface/photo/identification/identification1.jpg
+```
   ![](result/azface09.png?raw=true)
 
 * To count the number of faces in a crowd (for example, 
   `http://www.allwhitebackground.com/images/3/3818.jpg`)
   ![](http://www.allwhitebackground.com/images/3/3818.jpg)
   
-  ```console
-  $ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | wc -l
-  35
-  ```
+```console
+$ ml detect azface  http://www.allwhitebackground.com/images/3/3818.jpg | wc -l
+35
+```
 * Males and Females:
 
 ```console
