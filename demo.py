@@ -57,7 +57,7 @@ client = FaceClient(endpoint, credentials)  # Setup Azure face API client
 # Setup
 
 face_attrs = ['age', 'gender', 'glasses', 'emotion', 'occlusion']
-detect_photo_dir = 'photo/detection'
+detect_photo_dir = 'docs/photo/detection'
 
 # Detection
 
@@ -74,8 +74,8 @@ for path in list_files(detect_photo_dir):
 
 # Setup
 
-target_url = 'photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg'
-candidate_url = 'photo/identification/identification1.jpg'
+target_url = 'docs/photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg'
+candidate_url = 'docs/photo/identification/identification1.jpg'
 
 # Memorize target faces
 
