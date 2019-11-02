@@ -1,11 +1,12 @@
 # Face Recognition Service #
 
 This [MLHub](https://mlhub.ai) package provides a quick introduction
-to the pre-built Face models provided through the face API of
-Azure's Cognitive Services.
+to the pre-built Azure Face models. This service identifies faces
+within a photo. This package is part of the [Azure on
+MLHub](https://github.com/Azure/mlhub) repository.
 
-In addition to the demonstration this package provides a collection of
-stand alone commands that turn the service into useful *command line
+In addition to the *demo* commed this package provides a collection of
+commands that turn the service into useful *command line
 tools* for detecting faces in supplied photos together with age,
 gender, expression, and other observations about the face, and
 identifying faces similar to a given face in a photo.
@@ -17,19 +18,18 @@ under AI and Machine Learning called Face.  Once created you can
 access the web API subscription key from the portal.  This will be
 prompted for in the demo.
 
-This package is part of the [Azure on
-MLHub](https://github.com/Azure/mlhub) repository. Please note that
-these Azure models, unlike the MLHub models in general, use *closed
-source services* which have no guarantee of ongoing availability and
-do not come with the freedom to modify and share.
+Please note that these Azure models, unlike the MLHub models in
+general, use *closed source services* which have no guarantee of
+ongoing availability and do not come with the freedom to modify and
+share.
 
 Visit the github repository for more details:
-https://github.com/simonzhaoms/azface
+https://github.com/azure/azface
 
 The Python code is based on the [Microsoft Azure Face API
 Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
 
-## Usage ##
+## Usage
 
 * To install mlhub (e.g., Ubuntu 18.04 LTS)
 
@@ -44,90 +44,19 @@ Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/Face/).
   $ ml configure azface
   ```
 
-## Demonstration ##
+## Command Line Tools
 
-```console
-$ ml demo azface
-=============
-Face Services
-=============
+In addition to the *demo* presented below, the *azface* package
+provides a number of useful command line tools. Below we demonstrate a
+number of these. Most commands take an image as a parameter which may
+be a url or a path to a local file.  Commands include *detect* and
+*similar* and being pipeline oriented means the output will be
+CSV-like text that makes them easily incorporated into a command line
+pipeline.
 
-Welcome to a demo of the pre-built models for Face provided through Azure's 
-Cognitive Services. This cloud service accepts images and can perform 
-various analyses of the images, returning the results locally.
+**detect**
 
-An Azure resource is required to access this service (and to run this
-demo). See the README for details of a free subscription. Then you can
-provide the key and the endpoint information here.
-
-Please paste your Face API subscription key []: ********************************
-Please paste your endpoint []: https://australiaeast.api.cognitive.microsoft.com/face/v1.0
-
-The Azure Face API subscription key and endpoint have been saved to:
-
-  /home/gjw/.mlhub/azface/key.txt
-
-Detecting faces in photo:
-  photo/detection/detection2.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface01.png?raw=true)
-```console
-Detecting faces in photo:
-  photo/detection/detection3.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface02.png?raw=true)
-```console
-Detecting faces in photo:
-  photo/detection/detection6.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface03.png?raw=true)
-```console
-Detecting faces in photo:
-  photo/detection/detection1.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface04.png?raw=true)
-```console
-Detecting faces in photo:
-  photo/detection/detection5.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface05.png?raw=true)
-```console
-Detecting faces in photo:
-  photo/detection/detection4.jpg
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface06.png?raw=true)
-```console
-Detecting faces in the target photo:
-  photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
-
-Detecting faces in the candidate photo:
-  photo/identification/identification1.jpg
-
-Matching the face No. 0 ...
-
-Please close each image window (Ctrl-w) to proceed.
-```
-![](result/azface07.png?raw=true)
-```console
-To detect faces in provided photos:
-
-  $ ml detect azface
-```
-
-## Commands ##
-
-Besides the `demo` command, other commands such as `detect` and
-`similar` are also provided, but they are more pipeline oriented,
-which means the output will be CSV-like text that makes them easily be
-incorporated into a command line pipeline.
-
-* To detect faces in a photo:
+To detect faces in a photo:
 
   ```console
   $ ml detect azface ~/.mlhub/azface/photo/identification/identification1.jpg
@@ -159,7 +88,9 @@ incorporated into a command line pipeline.
   $ ml detect azface --key-file key.txt ~/.mlhub/azface/photo/identification/identification1.jpg
   ```
 
-* To find similar faces between two photos:
+**similar**
+
+To find similar faces between two photos:
 
   ```console
   $ ml similar azface xxx.jpg yyy.jpg
@@ -177,7 +108,6 @@ incorporated into a command line pipeline.
   ,495 238 495 320 577 320 577 238,
   ,211 162 211 243 292 243 292 162,
   ```
-
 
 ## Pipeline ##
 
@@ -322,6 +252,82 @@ $ eog 3818cap.png
 ```
 ![](photo/3818cap.png?raw=true)
 
+
+## Demonstration
+
+```console
+$ ml demo azface
+=============
+Face Services
+=============
+
+Welcome to a demo of the pre-built models for Face provided through Azure's 
+Cognitive Services. This cloud service accepts images and can perform 
+various analyses of the images, returning the results locally.
+
+An Azure resource is required to access this service (and to run this
+demo). See the README for details of a free subscription. Then you can
+provide the key and the endpoint information here.
+
+Please paste your Face API subscription key []: ********************************
+Please paste your endpoint []: https://australiaeast.api.cognitive.microsoft.com/face/v1.0
+
+The Azure Face API subscription key and endpoint have been saved to:
+
+  /home/gjw/.mlhub/azface/key.txt
+
+Detecting faces in photo:
+  photo/detection/detection2.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface01.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection3.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface02.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection6.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface03.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection1.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface04.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection5.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface05.png?raw=true)
+```console
+Detecting faces in photo:
+  photo/detection/detection4.jpg
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface06.png?raw=true)
+```console
+Detecting faces in the target photo:
+  photo/PersonGroup/Family1-Dad-Bill/Family1-Dad1.jpg
+
+Detecting faces in the candidate photo:
+  photo/identification/identification1.jpg
+
+Matching the face No. 0 ...
+
+Please close each image window (Ctrl-w) to proceed.
+```
+![](result/azface07.png?raw=true)
+```console
+To detect faces in provided photos:
+
+  $ ml detect azface
+```
 
 ## Contributing ##
 
